@@ -45,7 +45,7 @@ php -S localhost:8000 -t public
 | S4 | Aucun controle de role : un simple visiteur pouvait tout modifier/supprimer | aucun `#[IsGranted]` dans le projet | Hierarchie `ROLE_ADMIN > ROLE_MANAGER > ROLE_USER`, ecritures reservees aux gestionnaires, `/users` reserve aux admins |
 | S5 | `APP_SECRET` vide et base `root` sans mot de passe dans le `.env` versione | `.env` : `APP_SECRET=` et `DATABASE_URL="mysql://root:@..."` | Voir le bloc copier-coller section 5.1 (`.env.local` non versione) |
 | S6 | Mots de passe de demonstration en dur (`admin123`, `demo123`) | `src/Command/LoadDemoDataCommand.php` | A ne jamais utiliser en production ; creez vos comptes avec `app:create-admin` |
-| S7 | Aucun en-tete de securite HTTP, aucune protection anti force-brute | — | `SecurityHeadersSubscriber` (nosniff, anti-clickjacking, Referrer-Policy) + `login_throttling` (5 essais / 15 min) |
+| S7 | Aucun en-tete de securite HTTP, aucune protection anti force-brute | — | `SecurityHeadersSubscriber` (nosniff, anti-clickjacking, Referrer-Policy). L'anti force-brute `login_throttling` est pret mais commente dans `security.yaml` : il faut d'abord `composer require symfony/rate-limiter` |
 
 ### Les roles, en resume
 

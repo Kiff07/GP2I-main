@@ -30,10 +30,13 @@ security:
                 check_path: app_login
                 default_target_path: app_dashboard
                 enable_csrf: true
-                # Anti force-brute : 5 essais max toutes les 15 minutes
-                login_throttling:
-                    max_attempts: 5
-                    interval: '15 minutes'
+                # Anti force-brute (optionnel) : l'option "login_throttling"
+                # exige le paquet symfony/rate-limiter, absent du projet.
+                # Pour l'activer : composer require symfony/rate-limiter
+                # puis decommentez les 3 lignes ci-dessous.
+                # login_throttling:
+                #     max_attempts: 5
+                #     interval: '15 minutes'
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800 # 1 semaine
