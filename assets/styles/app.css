@@ -377,3 +377,162 @@ tr:last-child td {
         font-size: 28px;
     }
 }
+
+/* ============================================================
+   GP2I - Ameliorations design (ajoutees sans casser l'existant)
+   - badges de statut colores, en-tete fixe, navigation active
+   - recherche globale, page de connexion, pagination
+   - alertes d'erreur, stock faible, accessibilite
+   ============================================================ */
+
+.sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
+
+.skip-link {
+    position: absolute;
+    left: 16px; top: -48px;
+    background: var(--primary);
+    color: #fff;
+    padding: 8px 14px;
+    border-radius: 0 0 6px 6px;
+    z-index: 100;
+    transition: top 0.15s ease;
+}
+.skip-link:focus { top: 0; text-decoration: none; }
+
+/* --- En-tete fixe + marque --- */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    box-shadow: 0 1px 12px rgba(15, 23, 42, 0.06);
+}
+.brand { display: inline-flex; align-items: center; gap: 9px; }
+.brand:hover { text-decoration: none; }
+.brand-mark {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 8px;
+    width: 30px; height: 30px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 17px;
+}
+.navbar { flex-wrap: wrap; }
+.nav-links a {
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+.nav-links a:hover { background: #eef2ff; text-decoration: none; }
+.nav-links a.active { background: #e0e7ff; color: #3730a3; }
+
+/* --- Recherche globale dans l'en-tete --- */
+.global-search input {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font: inherit;
+    font-size: 14px;
+    padding: 8px 14px;
+    min-width: 210px;
+    background: var(--bg);
+}
+.global-search input:focus { background: #fff; }
+
+.user-menu { display: flex; align-items: center; gap: 10px; }
+.user-chip {
+    font-size: 14px; font-weight: 700; color: #374151;
+    max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.button.small { min-height: 34px; padding: 5px 11px; font-size: 14px; }
+
+/* --- Badges de statut : une couleur par signification --- */
+.status--available, .status--received { background: #dcfce7; border-color: #86efac; color: #166534; }
+.status--borrowed, .status--pending { background: #fef3c7; border-color: #fcd34d; color: #92400e; }
+.status--maintenance, .status--ordered { background: #dbeafe; border-color: #93c5fd; color: #1e40af; }
+.status--broken, .status--cancelled { background: #fee2e2; border-color: #fca5a5; color: #991b1b; }
+.status--disposed { background: #e5e7eb; border-color: #d1d5db; color: #4b5563; }
+
+/* --- Stock, compteurs, pagination --- */
+.stock-low { color: var(--danger); font-weight: 700; }
+.result-count { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+.status-summary { display: flex; flex-wrap: wrap; gap: 8px; }
+.panel-alert { border-color: #fcd34d; }
+.pagination {
+    display: flex; align-items: center; gap: 14px;
+    justify-content: center; margin-top: 18px;
+}
+.pagination-info { color: var(--muted); font-size: 14px; font-weight: 700; }
+.empty-state { text-align: center; padding: 28px 0 10px; }
+.empty-state .empty { margin-bottom: 14px; }
+
+/* --- Alertes : l'erreur n'etait pas stylee avant --- */
+.alert-error, .alert-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+.alert-info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+.alert-success, .alert-warning, .alert-error, .alert-danger, .alert-info { border-width: 1px; border-style: solid; }
+
+/* --- Interactions et accessibilite --- */
+.button { transition: background 0.15s ease, border-color 0.15s ease, transform 0.05s ease; }
+.button:active { transform: translateY(1px); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 3px solid #93c5fd;
+    outline-offset: 2px;
+}
+tbody tr { transition: background 0.12s ease; }
+tbody tr:hover { background: #f8fafc; }
+.stat-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.stat-card:hover { transform: translateY(-2px); }
+
+/* --- Grilles qui s'adaptent a la largeur disponible --- */
+.stats-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.detail-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+/* --- Page de connexion --- */
+.login-wrap { display: flex; justify-content: center; padding: 32px 0; }
+.login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 32px;
+    width: 100%;
+    max-width: 420px;
+}
+.login-card h1 { margin: 0 0 18px; font-size: 28px; }
+.login-field { margin-bottom: 16px; }
+.login-field label { display: block; font-weight: 700; margin-bottom: 6px; }
+.login-field input {
+    border: 1px solid var(--border); border-radius: 6px;
+    font: inherit; padding: 10px 12px; width: 100%;
+}
+.login-remember { display: flex; gap: 8px; align-items: center; font-size: 14px; margin-bottom: 18px; }
+.login-submit { width: 100%; }
+.login-help { color: var(--muted); font-size: 13px; margin: 18px 0 0; line-height: 1.7; }
+.login-help code { background: var(--bg); padding: 1px 5px; border-radius: 4px; }
+
+.site-footer {
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    display: flex; justify-content: space-between; gap: 12px;
+    font-size: 13px;
+    margin: 0 auto; max-width: 1180px;
+    padding: 18px 24px 28px;
+}
+
+@media (max-width: 800px) {
+    .nav-links { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; max-width: 100%; }
+    .global-search, .global-search input { width: 100%; }
+    .user-menu { width: 100%; justify-content: space-between; }
+    .filter-bar { flex-direction: column; align-items: stretch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+}

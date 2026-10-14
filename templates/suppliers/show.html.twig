@@ -41,7 +41,7 @@
                         {% for order in supplier.purchaseOrders %}
                             <tr>
                                 <td>{{ order.orderNumber }}</td>
-                                <td><span class="status">{{ order.statusLabel }}</span></td>
+                                <td><span class="status status--{{ order.status }}">{{ order.statusLabel }}</span></td>
                                 <td>{{ order.orderDate ? order.orderDate|date('d/m/Y') : '-' }}</td>
                                 <td class="actions"><a href="{{ path('app_purchase_orders_show', {'id': order.id}) }}">Voir</a></td>
                             </tr>

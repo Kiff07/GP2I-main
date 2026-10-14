@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Categories;
 use App\Entity\Materials;
+use App\Entity\Suppliers;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -55,6 +56,16 @@ class MaterialsType extends AbstractType
                 'class' => Categories::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Aucune categorie',
+                'required' => false,
+            ])
+            // CORRECTION : le champ fournisseur manquait. Impossible donc
+            // d'affecter un fournisseur a un materiel depuis l'interface,
+            // alors que la liste propose un filtre par fournisseur.
+            ->add('supplier', EntityType::class, [
+                'label' => 'Fournisseur',
+                'class' => Suppliers::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Aucun fournisseur',
                 'required' => false,
             ])
         ;

@@ -38,7 +38,7 @@
                             <tr>
                                 <td>{{ material.name }}</td>
                                 <td>{{ material.reference }}</td>
-                                <td><span class="status">{{ material.statusLabel }}</span></td>
+                                <td><span class="status status--{{ material.status }}">{{ material.statusLabel }}</span></td>
                                 <td class="actions"><a href="{{ path('app_materials_show', {'id': material.id}) }}">Voir</a></td>
                             </tr>
                         {% endfor %}

@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/purchase-orders')]
 class PurchaseOrdersController extends AbstractController
@@ -25,12 +26,14 @@ class PurchaseOrdersController extends AbstractController
                 'entity' => $order,
                 'show_path' => 'app_purchase_orders_show',
                 'edit_path' => 'app_purchase_orders_edit',
+            'delete_path' => 'app_purchase_orders_delete',
                 'values' => [$order->getOrderNumber(), $order->getSupplier()?->getName() ?: '-', $order->getStatusLabel(), $order->getOrderDate()?->format('d/m/Y'), $order->getTotalAmount() ?: '-'],
             ], $repository->findBy([], ['id' => 'DESC'])),
         ]);
     }
 
     #[Route('/new', name: 'app_purchase_orders_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $order = new PurchaseOrders();
@@ -67,6 +70,7 @@ class PurchaseOrdersController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_purchase_orders_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, PurchaseOrders $order, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(PurchaseOrdersType::class, $order);
@@ -77,5 +81,18 @@ class PurchaseOrdersController extends AbstractController
             return $this->redirectToRoute('app_purchase_orders_index');
         }
         return $this->render('crud/form.html.twig', ['title' => 'Modifier commande', 'form' => $form, 'back_path' => 'app_purchase_orders_index']);
+    }
+
+    #[Route('/{id}', name: 'app_purchase_orders_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function delete(Request $request, PurchaseOrders $order, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$order->getId(), (string) $request->request->get('_token'))) {
+            $em->remove($order);
+            $em->flush();
+            $this->addFlash('success', 'Commande supprimee.');
+        }
+
+        return $this->redirectToRoute('app_purchase_orders_index', [], Response::HTTP_SEE_OTHER);
     }
 }

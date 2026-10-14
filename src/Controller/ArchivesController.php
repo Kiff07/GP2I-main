@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/archives')]
 class ArchivesController extends AbstractController
@@ -31,6 +32,7 @@ class ArchivesController extends AbstractController
     }
 
     #[Route('/new', name: 'app_archives_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $archive = new Archives();
@@ -49,10 +51,11 @@ class ArchivesController extends AbstractController
     #[Route('/{id}', name: 'app_archives_show', methods: ['GET'])]
     public function show(Archives $archive): Response
     {
-        return $this->render('crud/show.html.twig', ['title' => (string) $archive, 'edit_path' => 'app_archives_edit', 'back_path' => 'app_archives_index', 'entity' => $archive, 'fields' => ['Entite' => $archive->getEntity(), 'ID entite' => $archive->getEntityId(), 'Action' => $archive->getAction(), 'Cree par' => $archive->getCreatedBy()?->getFullName() ?: '-', 'Date' => $archive->getCreatedAt()?->format('d/m/Y H:i'), 'Donnees' => json_encode($archive->getData(), JSON_PRETTY_PRINT) ?: '-']]);
+        return $this->render('crud/show.html.twig', ['title' => (string) $archive, 'edit_path' => 'app_archives_edit', 'back_path' => 'app_archives_index', 'delete_path' => 'app_archives_delete', 'entity' => $archive, 'fields' => ['Entite' => $archive->getEntity(), 'ID entite' => $archive->getEntityId(), 'Action' => $archive->getAction(), 'Cree par' => $archive->getCreatedBy()?->getFullName() ?: '-', 'Date' => $archive->getCreatedAt()?->format('d/m/Y H:i'), 'Donnees' => json_encode($archive->getData(), JSON_PRETTY_PRINT) ?: '-']]);
     }
 
     #[Route('/{id}/edit', name: 'app_archives_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, Archives $archive, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(ArchivesType::class, $archive);
@@ -76,5 +79,18 @@ class ArchivesController extends AbstractController
         $decoded = json_decode($data, true);
 
         return is_array($decoded) ? $decoded : ['raw' => $data];
+    }
+
+    #[Route('/{id}', name: 'app_archives_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function delete(Request $request, Archives $archive, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$archive->getId(), (string) $request->request->get('_token'))) {
+            $em->remove($archive);
+            $em->flush();
+            $this->addFlash('success', 'Archive supprimee.');
+        }
+
+        return $this->redirectToRoute('app_archives_index', [], Response::HTTP_SEE_OTHER);
     }
 }

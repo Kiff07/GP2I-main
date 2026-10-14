@@ -77,6 +77,22 @@ class PurchaseOrders
     }
 
     public function __toString(): string { return $this->order_number ?? 'Commande'; }
+
+    /**
+     * Recalcule le montant total a partir des lignes de commande.
+     * AVANT : le total etait tape a la main et pouvait ne correspondre
+     * a aucune ligne. Appele apres chaque creation/modification de ligne.
+     */
+    public function recalculateTotal(): static
+    {
+        $total = 0.0;
+        foreach ($this->items as $item) {
+            $total += (int) $item->getQuantity() * (float) ($item->getUnitPrice() ?? 0);
+        }
+        $this->total_amount = number_format($total, 2, '.', '');
+
+        return $this;
+    }
     public static function statusChoices(): array { return ['En attente' => self::STATUS_PENDING, 'Commandee' => self::STATUS_ORDERED, 'Recue' => self::STATUS_RECEIVED, 'Annulee' => self::STATUS_CANCELLED]; }
     public function getStatusLabel(): string { return array_flip(self::statusChoices())[$this->status] ?? (string) $this->status; }
     public function getId(): ?int { return $this->id; }

@@ -14,13 +14,18 @@
         </div>
     </section>
 
+    {% if material.quantity <= 2 %}
+        <div class="alert alert-warning" role="alert">Stock faible : il reste {{ material.quantity }} exemplaire(s) de ce materiel.</div>
+    {% endif %}
+
     <section class="detail-grid">
         <div class="detail-item"><span>Reference</span><strong>{{ material.reference }}</strong></div>
         <div class="detail-item"><span>Numero de serie</span><strong>{{ material.serialNumber }}</strong></div>
         <div class="detail-item"><span>Quantite</span><strong>{{ material.quantity }}</strong></div>
-        <div class="detail-item"><span>Statut</span><strong>{{ material.statusLabel }}</strong></div>
+        <div class="detail-item"><span>Statut</span><strong><span class="status status--{{ material.status }}">{{ material.statusLabel }}</span></strong></div>
         <div class="detail-item"><span>Emplacement</span><strong>{{ material.location ?: '-' }}</strong></div>
         <div class="detail-item"><span>Categorie</span><strong>{{ material.category ? material.category.name : '-' }}</strong></div>
+        <div class="detail-item"><span>Fournisseur</span><strong>{{ material.supplier ? material.supplier.name : '-' }}</strong></div>
         <div class="detail-item"><span>Date d achat</span><strong>{{ material.purchaseDate ? material.purchaseDate|date('d/m/Y') : '-' }}</strong></div>
         <div class="detail-item"><span>Prix d achat</span><strong>{{ material.purchasePrice ? material.purchasePrice|number_format(2, ',', ' ') ~ ' EUR' : '-' }}</strong></div>
         <div class="detail-item"><span>Cree le</span><strong>{{ material.createdAt ? material.createdAt|date('d/m/Y H:i') : '-' }}</strong></div>

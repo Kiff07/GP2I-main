@@ -42,6 +42,41 @@
         </article>
     </section>
 
+    {% if status_counts is not empty %}
+        <section class="content-panel">
+            <div class="section-title"><h2>Repartition par statut</h2></div>
+            <div class="status-summary">
+                {% for label, value in status_choices %}
+                    <span class="status status--{{ value }}">{{ label }} : {{ status_counts[value]|default(0) }}</span>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if low_stock is not empty %}
+        <section class="content-panel panel-alert">
+            <div class="section-title">
+                <h2>Alertes stock faible</h2>
+                <a href="{{ path('app_materials_index') }}">Voir l'inventaire</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Materiel</th><th>Reference</th><th>Reste</th><th></th></tr></thead>
+                    <tbody>
+                        {% for material in low_stock %}
+                            <tr>
+                                <td>{{ material.name }}</td>
+                                <td>{{ material.reference }}</td>
+                                <td><span class="stock-low">{{ material.quantity }}</span></td>
+                                <td class="actions"><a href="{{ path('app_materials_show', {'id': material.id}) }}">Ouvrir</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
+
     <section class="content-panel">
         <div class="section-title">
             <h2>Derniers materiels</h2>
@@ -65,7 +100,7 @@
                             <tr>
                                 <td>{{ material.name }}</td>
                                 <td>{{ material.reference }}</td>
-                                <td><span class="status">{{ material.statusLabel }}</span></td>
+                                <td><span class="status status--{{ material.status }}">{{ material.statusLabel }}</span></td>
                                 <td>{{ material.category ? material.category.name : '-' }}</td>
                                 <td class="actions"><a href="{{ path('app_materials_show', {'id': material.id}) }}">Ouvrir</a></td>
                             </tr>

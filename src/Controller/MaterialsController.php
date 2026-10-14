@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/materials')]
 class MaterialsController extends AbstractController
@@ -27,9 +28,16 @@ class MaterialsController extends AbstractController
         $status = $request->query->get('status');
         $categoryId = $request->query->getInt('category');
         $supplierId = $request->query->getInt('supplier');
+        $page = $request->query->getInt('page', 1);
+
+        // Pagination : avant, search() chargeait toute la table d'un coup.
+        $result = $materialsRepository->searchPaginated($q, $status, $categoryId ?: null, $supplierId ?: null, $page);
 
         return $this->render('materials/index.html.twig', [
-            'materials' => $materialsRepository->search($q, $status, $categoryId ?: null, $supplierId ?: null),
+            'materials' => $result['items'],
+            'total' => $result['total'],
+            'page' => $result['page'],
+            'pages' => $result['pages'],
             'categories' => $categoriesRepository->findBy([], ['name' => 'ASC']),
             'suppliers' => $suppliersRepository->findBy([], ['name' => 'ASC']),
             'statusChoices' => Materials::statusChoices(),
@@ -42,7 +50,9 @@ class MaterialsController extends AbstractController
         ]);
     }
 
+    // Ecritures reservees aux gestionnaires (et admins par heritage de roles).
     #[Route('/new', name: 'app_materials_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $material = new Materials();
@@ -73,6 +83,7 @@ class MaterialsController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_materials_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, Materials $material, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(MaterialsType::class, $material);
@@ -94,6 +105,7 @@ class MaterialsController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_materials_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, Materials $material, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$material->getId(), (string) $request->request->get('_token'))) {

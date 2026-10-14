@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/purchase-items')]
 class PurchaseItemsController extends AbstractController
@@ -31,27 +32,45 @@ class PurchaseItemsController extends AbstractController
     }
 
     #[Route('/new', name: 'app_purchase_items_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $item = new PurchaseItems();
         $form = $this->createForm(PurchaseItemsType::class, $item);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) { $em->persist($item); $em->flush(); $this->addFlash('success', 'Ligne creee.'); return $this->redirectToRoute('app_purchase_items_index'); }
+        if ($form->isSubmitted() && $form->isValid()) { $em->persist($item); $item->getPurchaseOrder()?->recalculateTotal(); $em->flush(); $this->addFlash('success', 'Ligne creee.'); return $this->redirectToRoute('app_purchase_items_index'); }
         return $this->render('crud/form.html.twig', ['title' => 'Nouvelle ligne', 'form' => $form, 'back_path' => 'app_purchase_items_index']);
     }
 
     #[Route('/{id}', name: 'app_purchase_items_show', methods: ['GET'])]
     public function show(PurchaseItems $item): Response
     {
-        return $this->render('crud/show.html.twig', ['title' => (string) $item, 'edit_path' => 'app_purchase_items_edit', 'back_path' => 'app_purchase_items_index', 'entity' => $item, 'fields' => ['Commande' => $item->getPurchaseOrder()?->getOrderNumber(), 'Materiel' => $item->getMaterialName(), 'Reference' => $item->getMaterialReference() ?: '-', 'Quantite' => $item->getQuantity(), 'Prix unitaire' => $item->getUnitPrice() ?: '-', 'Quantite recue' => $item->getReceivedQuantity()]]);
+        return $this->render('crud/show.html.twig', ['title' => (string) $item, 'edit_path' => 'app_purchase_items_edit', 'back_path' => 'app_purchase_items_index', 'delete_path' => 'app_purchase_items_delete', 'entity' => $item, 'fields' => ['Commande' => $item->getPurchaseOrder()?->getOrderNumber(), 'Materiel' => $item->getMaterialName(), 'Reference' => $item->getMaterialReference() ?: '-', 'Quantite' => $item->getQuantity(), 'Prix unitaire' => $item->getUnitPrice() ?: '-', 'Quantite recue' => $item->getReceivedQuantity()]]);
     }
 
     #[Route('/{id}/edit', name: 'app_purchase_items_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, PurchaseItems $item, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(PurchaseItemsType::class, $item);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) { $em->flush(); $this->addFlash('success', 'Ligne modifiee.'); return $this->redirectToRoute('app_purchase_items_index'); }
+        if ($form->isSubmitted() && $form->isValid()) { $item->getPurchaseOrder()?->recalculateTotal(); $em->flush(); $this->addFlash('success', 'Ligne modifiee.'); return $this->redirectToRoute('app_purchase_items_index'); }
         return $this->render('crud/form.html.twig', ['title' => 'Modifier ligne', 'form' => $form, 'back_path' => 'app_purchase_items_index']);
+    }
+
+    #[Route('/{id}', name: 'app_purchase_items_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function delete(Request $request, PurchaseItems $item, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$item->getId(), (string) $request->request->get('_token'))) {
+            $order = $item->getPurchaseOrder();
+            $em->remove($item);
+            $em->flush();
+            $order?->recalculateTotal();
+            $em->flush();
+            $this->addFlash('success', 'Ligne supprimee.');
+        }
+
+        return $this->redirectToRoute('app_purchase_items_index', [], Response::HTTP_SEE_OTHER);
     }
 }

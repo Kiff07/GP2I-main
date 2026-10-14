@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="GP2I - Gestion du parc et du materiel informatique">
         <title>{% block title %}GP2I - Gestion du materiel{% endblock %}</title>
         {% block stylesheets %}
         {% endblock %}
@@ -19,29 +20,53 @@
         {% endif %}
     </head>
     <body>
+        <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+        {% set route = app.request.attributes.get('_route')|default('') %}
         <header class="site-header">
-            <nav class="navbar">
-                <a class="brand" href="{{ path('app_dashboard') }}">GP2I</a>
-                <div class="nav-links">
-                    <a href="{{ path('app_dashboard') }}">Tableau de bord</a>
-                    <a href="{{ path('app_materials_index') }}">Materiels</a>
-                    <a href="{{ path('app_categories_index') }}">Categories</a>
-                    <a href="{{ path('app_suppliers_index') }}">Fournisseurs</a>
-                    <a href="{{ path('app_purchase_orders_index') }}">Commandes</a>
-                    <a href="{{ path('app_inventory_movements_index') }}">Mouvements</a>
-                    <a href="{{ path('app_users_index') }}">Utilisateurs</a>
-                </div>
+            <nav class="navbar" aria-label="Navigation principale">
+                <a class="brand" href="{{ path('app_dashboard') }}"><span class="brand-mark" aria-hidden="true">G</span>GP2I</a>
+
+                {% if app.user %}
+                    <div class="nav-links">
+                        <a href="{{ path('app_dashboard') }}" class="{{ route starts with 'app_dashboard' ? 'active' : '' }}" {{ route starts with 'app_dashboard' ? 'aria-current="page"' : '' }}>Tableau de bord</a>
+                        <a href="{{ path('app_materials_index') }}" class="{{ route starts with 'app_materials' ? 'active' : '' }}" {{ route starts with 'app_materials' ? 'aria-current="page"' : '' }}>Materiels</a>
+                        <a href="{{ path('app_categories_index') }}" class="{{ route starts with 'app_categories' ? 'active' : '' }}" {{ route starts with 'app_categories' ? 'aria-current="page"' : '' }}>Categories</a>
+                        <a href="{{ path('app_suppliers_index') }}" class="{{ route starts with 'app_suppliers' ? 'active' : '' }}" {{ route starts with 'app_suppliers' ? 'aria-current="page"' : '' }}>Fournisseurs</a>
+                        <a href="{{ path('app_purchase_orders_index') }}" class="{{ route starts with 'app_purchase_orders' ? 'active' : '' }}" {{ route starts with 'app_purchase_orders' ? 'aria-current="page"' : '' }}>Commandes</a>
+                        <a href="{{ path('app_inventory_movements_index') }}" class="{{ route starts with 'app_inventory_movements' ? 'active' : '' }}" {{ route starts with 'app_inventory_movements' ? 'aria-current="page"' : '' }}>Mouvements</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_users_index') }}" class="{{ route starts with 'app_users' ? 'active' : '' }}" {{ route starts with 'app_users' ? 'aria-current="page"' : '' }}>Utilisateurs</a>
+                        {% endif %}
+                    </div>
+
+                    {# Recherche globale : redirige vers la liste des materiels filtree #}
+                    <form class="global-search" method="get" action="{{ path('app_materials_index') }}" role="search">
+                        <label class="sr-only" for="global-q">Rechercher un materiel</label>
+                        <input type="search" id="global-q" name="q" placeholder="Rechercher un materiel..." autocomplete="off">
+                    </form>
+
+                    <div class="user-menu">
+                        <span class="user-chip" title="{{ app.user.userIdentifier }}">{{ app.user.fullName ?? app.user.userIdentifier }}</span>
+                        <a class="button secondary small" href="{{ path('app_logout') }}">Deconnexion</a>
+                    </div>
+                {% endif %}
             </nav>
         </header>
 
-        <main class="page">
+        <main class="page" id="contenu">
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
-                    <div class="alert alert-{{ label }}">{{ message }}</div>
+                    <div class="alert alert-{{ label }}" role="alert">{{ message }}</div>
                 {% endfor %}
             {% endfor %}
 
             {% block body %}{% endblock %}
         </main>
+
+        <footer class="site-footer">
+            <span>GP2I - Gestion du parc materiel</span>
+            <span>{{ 'now'|date('Y') }}</span>
+        </footer>
     </body>
 </html>

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Materials;
 use App\Repository\CategoriesRepository;
 use App\Repository\DeliveriesRepository;
 use App\Repository\InventoryMovementsRepository;
@@ -34,6 +35,9 @@ class DashboardController extends AbstractController
             'deliveries_count' => $deliveriesRepository->count([]),
             'movements_count' => $inventoryMovementsRepository->count([]),
             'users_count' => $usersRepository->count([]),
+            'status_counts' => $materialsRepository->countByStatus(),
+            'status_choices' => Materials::statusChoices(),
+            'low_stock' => $materialsRepository->findLowStock(),
         ]);
     }
 }

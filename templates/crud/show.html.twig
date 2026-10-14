@@ -11,6 +11,12 @@
         <div class="button-row">
             <a class="button secondary" href="{{ path(edit_path, {'id': entity.id}) }}">Modifier</a>
             <a class="button secondary" href="{{ path(back_path) }}">Retour</a>
+            {% if delete_path is defined and delete_path and is_granted('ROLE_MANAGER') %}
+                <form method="post" action="{{ path(delete_path, {'id': entity.id}) }}" onsubmit="return confirm('Supprimer cet enregistrement ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ entity.id) }}">
+                    <button class="button danger">Supprimer</button>
+                </form>
+            {% endif %}
         </div>
     </section>
 

@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - GP2I{% endblock %}
+
+{% block body %}
+    <section class="login-wrap">
+        <div class="login-card">
+            <p class="eyebrow">Gestion du materiel</p>
+            <h1>Connexion</h1>
+
+            {% if error %}
+                <div class="alert alert-error" role="alert">
+                    Identifiants invalides, veuillez reessayer.
+                </div>
+            {% endif %}
+
+            <form method="post" action="{{ path('app_login') }}">
+                <div class="login-field">
+                    <label for="username">Email</label>
+                    <input type="email" id="username" name="_username" value="{{ last_username }}"
+                           autocomplete="username" required autofocus>
+                </div>
+
+                <div class="login-field">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="_password"
+                           autocomplete="current-password" required>
+                </div>
+
+                <label class="login-remember">
+                    <input type="checkbox" name="_remember_me" value="1">
+                    Rester connecte
+                </label>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button class="button primary login-submit" type="submit">Se connecter</button>
+            </form>
+
+            <p class="login-help">
+                Compte de demonstration (a changer) : <code>admin@gp2i.local</code> / <code>admin123</code><br>
+                Creez un compte avec : <code>php bin/console app:create-admin</code>
+            </p>
+        </div>
+    </section>
+{% endblock %}
