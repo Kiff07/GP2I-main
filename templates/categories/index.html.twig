@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Categories - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Classement</p>
+            <h1>Categories</h1>
+        </div>
+        <a class="button primary" href="{{ path('app_categories_new') }}">Nouvelle categorie</a>
+    </section>
+
+    <section class="content-panel">
+        {% if categories is not empty %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Description</th>
+                            <th>Materiels</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.description|length > 90 ? category.description|slice(0, 90) ~ '...' : category.description }}</td>
+                                <td>{{ category.materials|length }}</td>
+                                <td class="actions">
+                                    <a href="{{ path('app_categories_show', {'id': category.id}) }}">Voir</a>
+                                    <a href="{{ path('app_categories_edit', {'id': category.id}) }}">Modifier</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty">Aucune categorie trouvee.</p>
+        {% endif %}
+    </section>
+{% endblock %}

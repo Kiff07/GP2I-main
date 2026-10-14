@@ -1,0 +1,4 @@
+<form method="post" action="{{ path('app_suppliers_delete', {'id': supplier.id}) }}" onsubmit="return confirm('Supprimer ce fournisseur ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ supplier.id) }}">
+    <button class="button danger">Supprimer</button>
+</form>

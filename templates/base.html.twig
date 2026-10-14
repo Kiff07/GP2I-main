@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}GP2I - Gestion du materiel{% endblock %}</title>
+        {% block stylesheets %}
+        {% endblock %}
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+
+        {% set frankenphp_hot_reload = app.request.server.get('FRANKENPHP_HOT_RELOAD') %}
+        {% if frankenphp_hot_reload %}
+        <meta name="frankenphp-hot-reload:url" content="{{ frankenphp_hot_reload }}">
+        <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
+        <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
+        {% endif %}
+    </head>
+    <body>
+        <header class="site-header">
+            <nav class="navbar">
+                <a class="brand" href="{{ path('app_dashboard') }}">GP2I</a>
+                <div class="nav-links">
+                    <a href="{{ path('app_dashboard') }}">Tableau de bord</a>
+                    <a href="{{ path('app_materials_index') }}">Materiels</a>
+                    <a href="{{ path('app_categories_index') }}">Categories</a>
+                    <a href="{{ path('app_suppliers_index') }}">Fournisseurs</a>
+                    <a href="{{ path('app_purchase_orders_index') }}">Commandes</a>
+                    <a href="{{ path('app_inventory_movements_index') }}">Mouvements</a>
+                    <a href="{{ path('app_users_index') }}">Utilisateurs</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="page">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}">{{ message }}</div>
+                {% endfor %}
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </main>
+    </body>
+</html>

@@ -1,0 +1,379 @@
+:root {
+    --bg: #f4f6f8;
+    --surface: #ffffff;
+    --text: #1f2933;
+    --muted: #6b7280;
+    --border: #d9dee7;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --danger: #b91c1c;
+    --warning: #92400e;
+    --success: #166534;
+    --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.site-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.navbar {
+    align-items: center;
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    margin: 0 auto;
+    max-width: 1180px;
+    padding: 16px 24px;
+}
+
+.brand {
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.nav-links a {
+    color: #374151;
+    font-weight: 600;
+}
+
+.page {
+    margin: 0 auto;
+    max-width: 1180px;
+    padding: 32px 24px 48px;
+}
+
+.page-heading,
+.section-title,
+.button-row,
+.form-actions {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+}
+
+.page-heading {
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.page-heading h1,
+.section-title h2 {
+    margin: 0;
+}
+
+.page-heading h1 {
+    font-size: 32px;
+}
+
+.eyebrow {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+}
+
+.button {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    font-weight: 700;
+    justify-content: center;
+    min-height: 40px;
+    padding: 8px 14px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.button:hover {
+    text-decoration: none;
+}
+
+.button.primary {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+.button.primary:hover {
+    background: var(--primary-dark);
+}
+
+.button.secondary {
+    background: #ffffff;
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.button.danger {
+    background: #ffffff;
+    border-color: #fecaca;
+    color: var(--danger);
+}
+
+.stats-grid,
+.detail-grid,
+.form-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 24px;
+}
+
+.stat-card,
+.content-panel,
+.form-card,
+.detail-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.stat-card,
+.content-panel,
+.form-card,
+.detail-item {
+    padding: 22px;
+}
+
+.stat-card span,
+.detail-item span {
+    color: var(--muted);
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.stat-card strong {
+    font-size: 34px;
+}
+
+.content-panel {
+    margin-bottom: 24px;
+}
+
+.filter-bar {
+    align-items: flex-end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 150px;
+}
+
+.filter-field.search-field {
+    flex: 1 1 240px;
+}
+
+.filter-field label {
+    color: #374151;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.filter-field input,
+.filter-field select {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+    min-height: 40px;
+    padding: 8px 12px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 1px;
+}
+
+.section-title {
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    border-collapse: collapse;
+    min-width: 760px;
+    width: 100%;
+}
+
+th,
+td {
+    border-bottom: 1px solid var(--border);
+    padding: 12px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    color: var(--muted);
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+tr:last-child td {
+    border-bottom: 0;
+}
+
+.actions {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.actions a + a {
+    margin-left: 10px;
+}
+
+.status {
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 999px;
+    color: #3730a3;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 3px 9px;
+}
+
+.empty,
+.description {
+    color: var(--muted);
+    margin: 0;
+}
+
+.form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-grid.single {
+    grid-template-columns: 1fr;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+.form-card label {
+    color: #374151;
+    display: block;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.form-card input,
+.form-card select,
+.form-card textarea {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font: inherit;
+    padding: 10px 12px;
+    width: 100%;
+}
+
+.form-card ul {
+    color: var(--danger);
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+}
+
+.form-actions {
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.detail-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.detail-item strong {
+    overflow-wrap: anywhere;
+}
+
+.detail-item.wide {
+    grid-column: 1 / -1;
+}
+
+.alert {
+    border-radius: 6px;
+    margin-bottom: 16px;
+    padding: 12px 14px;
+}
+
+.alert-success {
+    background: #dcfce7;
+    color: var(--success);
+}
+
+.alert-warning {
+    background: #fef3c7;
+    color: var(--warning);
+}
+
+@media (max-width: 800px) {
+    .navbar,
+    .page-heading,
+    .button-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .stats-grid,
+    .detail-grid,
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page-heading h1 {
+        font-size: 28px;
+    }
+}

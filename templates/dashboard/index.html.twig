@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de bord - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Gestion du parc</p>
+            <h1>Tableau de bord</h1>
+        </div>
+        <a class="button primary" href="{{ path('app_materials_new') }}">Ajouter un materiel</a>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <span>Materiels</span>
+            <strong>{{ materials_count }}</strong>
+        </article>
+        <article class="stat-card">
+            <span>Categories</span>
+            <strong>{{ categories_count }}</strong>
+        </article>
+        <article class="stat-card">
+            <span>Fournisseurs</span>
+            <strong>{{ suppliers_count }}</strong>
+        </article>
+        <article class="stat-card">
+            <span>Commandes</span>
+            <strong>{{ orders_count }}</strong>
+        </article>
+        <article class="stat-card">
+            <span>Livraisons</span>
+            <strong>{{ deliveries_count }}</strong>
+        </article>
+        <article class="stat-card">
+            <span>Mouvements</span>
+            <strong>{{ movements_count }}</strong>
+        </article>
+        <article class="stat-card">
+            <span>Utilisateurs</span>
+            <strong>{{ users_count }}</strong>
+        </article>
+    </section>
+
+    <section class="content-panel">
+        <div class="section-title">
+            <h2>Derniers materiels</h2>
+            <a href="{{ path('app_materials_index') }}">Voir tout</a>
+        </div>
+
+        {% if materials is not empty %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Reference</th>
+                            <th>Statut</th>
+                            <th>Categorie</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for material in materials %}
+                            <tr>
+                                <td>{{ material.name }}</td>
+                                <td>{{ material.reference }}</td>
+                                <td><span class="status">{{ material.statusLabel }}</span></td>
+                                <td>{{ material.category ? material.category.name : '-' }}</td>
+                                <td class="actions"><a href="{{ path('app_materials_show', {'id': material.id}) }}">Ouvrir</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty">Aucun materiel enregistre pour le moment.</p>
+        {% endif %}
+    </section>
+{% endblock %}

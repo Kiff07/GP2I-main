@@ -1,0 +1,10 @@
+{{ form_start(form, {'attr': {'class': 'form-card'}}) }}
+    <div class="form-grid single">
+        {{ form_row(form.name) }}
+        {{ form_row(form.description) }}
+    </div>
+    <div class="form-actions">
+        <button class="button primary">{{ button_label|default('Enregistrer') }}</button>
+        <a class="button secondary" href="{{ path('app_categories_index') }}">Annuler</a>
+    </div>
+{{ form_end(form) }}

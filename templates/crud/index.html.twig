@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }} - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Gestion</p>
+            <h1>{{ title }}</h1>
+        </div>
+        <a class="button primary" href="{{ path(new_path) }}">Nouveau</a>
+    </section>
+
+    <section class="content-panel">
+        {% if rows is not empty %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            {% for header in headers %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                            <tr>
+                                {% for value in row.values %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                                <td class="actions">
+                                    <a href="{{ path(row.show_path, {'id': row.entity.id}) }}">Voir</a>
+                                    <a href="{{ path(row.edit_path, {'id': row.entity.id}) }}">Modifier</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty">Aucun enregistrement trouve.</p>
+        {% endif %}
+    </section>
+{% endblock %}

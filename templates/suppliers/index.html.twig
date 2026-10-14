@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Fournisseurs - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Achats</p>
+            <h1>Fournisseurs</h1>
+        </div>
+        <a class="button primary" href="{{ path('app_suppliers_new') }}">Nouveau fournisseur</a>
+    </section>
+
+    <section class="content-panel">
+        {% if suppliers is not empty %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>Telephone</th>
+                            <th>Commandes</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for supplier in suppliers %}
+                            <tr>
+                                <td>{{ supplier.name }}</td>
+                                <td>{{ supplier.contactName ?: '-' }}</td>
+                                <td>{{ supplier.email ?: '-' }}</td>
+                                <td>{{ supplier.phone ?: '-' }}</td>
+                                <td>{{ supplier.purchaseOrders|length }}</td>
+                                <td class="actions">
+                                    <a href="{{ path('app_suppliers_show', {'id': supplier.id}) }}">Voir</a>
+                                    <a href="{{ path('app_suppliers_edit', {'id': supplier.id}) }}">Modifier</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty">Aucun fournisseur trouve.</p>
+        {% endif %}
+    </section>
+{% endblock %}

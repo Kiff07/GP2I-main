@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau fournisseur - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Achats</p>
+            <h1>Nouveau fournisseur</h1>
+        </div>
+    </section>
+
+    {{ include('suppliers/_form.html.twig') }}
+{% endblock %}

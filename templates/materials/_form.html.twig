@@ -1,0 +1,17 @@
+{{ form_start(form, {'attr': {'class': 'form-card'}}) }}
+    <div class="form-grid">
+        {{ form_row(form.name) }}
+        {{ form_row(form.reference) }}
+        {{ form_row(form.serialNumber) }}
+        {{ form_row(form.quantity) }}
+        {{ form_row(form.status) }}
+        {{ form_row(form.location) }}
+        {{ form_row(form.purchaseDate) }}
+        {{ form_row(form.purchasePrice) }}
+        {{ form_row(form.category) }}
+    </div>
+    <div class="form-actions">
+        <button class="button primary">{{ button_label|default('Enregistrer') }}</button>
+        <a class="button secondary" href="{{ path('app_materials_index') }}">Annuler</a>
+    </div>
+{{ form_end(form) }}

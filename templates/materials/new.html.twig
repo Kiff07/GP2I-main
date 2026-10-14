@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau materiel - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Inventaire</p>
+            <h1>Nouveau materiel</h1>
+        </div>
+    </section>
+
+    {{ include('materials/_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }} - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Detail</p>
+            <h1>{{ title }}</h1>
+        </div>
+        <div class="button-row">
+            <a class="button secondary" href="{{ path(edit_path, {'id': entity.id}) }}">Modifier</a>
+            <a class="button secondary" href="{{ path(back_path) }}">Retour</a>
+        </div>
+    </section>
+
+    <section class="detail-grid">
+        {% for label, value in fields %}
+            <div class="detail-item {{ value matches '/\\n/' ? 'wide' : '' }}">
+                <span>{{ label }}</span>
+                <strong>{{ value }}</strong>
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}

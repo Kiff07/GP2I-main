@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ supplier.name }} - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Fournisseur</p>
+            <h1>{{ supplier.name }}</h1>
+        </div>
+        <div class="button-row">
+            <a class="button secondary" href="{{ path('app_suppliers_edit', {'id': supplier.id}) }}">Modifier</a>
+            {{ include('suppliers/_delete_form.html.twig') }}
+        </div>
+    </section>
+
+    <section class="detail-grid">
+        <div class="detail-item"><span>Contact</span><strong>{{ supplier.contactName ?: '-' }}</strong></div>
+        <div class="detail-item"><span>Email</span><strong>{{ supplier.email ?: '-' }}</strong></div>
+        <div class="detail-item"><span>Telephone</span><strong>{{ supplier.phone ?: '-' }}</strong></div>
+        <div class="detail-item"><span>Cree le</span><strong>{{ supplier.createdAt ? supplier.createdAt|date('d/m/Y H:i') : '-' }}</strong></div>
+        <div class="detail-item wide"><span>Adresse</span><strong>{{ supplier.address ?: '-' }}</strong></div>
+    </section>
+
+    <section class="content-panel">
+        <div class="section-title">
+            <h2>Commandes associees</h2>
+        </div>
+        {% if supplier.purchaseOrders is not empty %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Numero</th>
+                            <th>Statut</th>
+                            <th>Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in supplier.purchaseOrders %}
+                            <tr>
+                                <td>{{ order.orderNumber }}</td>
+                                <td><span class="status">{{ order.statusLabel }}</span></td>
+                                <td>{{ order.orderDate ? order.orderDate|date('d/m/Y') : '-' }}</td>
+                                <td class="actions"><a href="{{ path('app_purchase_orders_show', {'id': order.id}) }}">Voir</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="empty">Aucune commande associee.</p>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }} - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Formulaire</p>
+            <h1>{{ title }}</h1>
+        </div>
+    </section>
+
+    {{ form_start(form, {'attr': {'class': 'form-card'}}) }}
+        <div class="form-grid">
+            {% for child in form %}
+                {% if child.vars.name != '_token' %}
+                    <div class="{{ child.vars.block_prefixes[1] == 'textarea' ? 'full' : '' }}">
+                        {{ form_row(child) }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="form-actions">
+            <button class="button primary">Enregistrer</button>
+            <a class="button secondary" href="{{ path(back_path) }}">Annuler</a>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}
