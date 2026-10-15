@@ -5,24 +5,30 @@ namespace App\Controller;
 use App\Entity\Categories;
 use App\Form\CategoriesType;
 use App\Repository\CategoriesRepository;
+use App\Service\ArchiveService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/categories')]
 class CategoriesController extends AbstractController
 {
     #[Route('/', name: 'app_categories_index', methods: ['GET'])]
-    public function index(CategoriesRepository $categoriesRepository): Response
+    public function index(Request $request, CategoriesRepository $categoriesRepository): Response
     {
+        $q = $request->query->get('q');
+
         return $this->render('categories/index.html.twig', [
-            'categories' => $categoriesRepository->findBy([], ['name' => 'ASC']),
+            'categories' => $categoriesRepository->search($q),
+            'q' => $q,
         ]);
     }
 
     #[Route('/new', name: 'app_categories_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $category = new Categories();
@@ -33,7 +39,7 @@ class CategoriesController extends AbstractController
             $entityManager->persist($category);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Categorie creee avec succes.');
+            $this->addFlash('success', 'Catégorie créée avec succes.');
 
             return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -53,6 +59,7 @@ class CategoriesController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_categories_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CategoriesType::class, $category);
@@ -61,7 +68,7 @@ class CategoriesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            $this->addFlash('success', 'Categorie modifiee avec succes.');
+            $this->addFlash('success', 'Catégorie modifiée avec succes.');
 
             return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -73,15 +80,17 @@ class CategoriesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_categories_delete', methods: ['POST'])]
-    public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
+    #[IsGranted('ROLE_MANAGER')]
+    public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager, ArchiveService $archiveService): Response
     {
         if ($this->isCsrfTokenValid('delete'.$category->getId(), (string) $request->request->get('_token'))) {
             if ($category->getMaterials()->count() > 0) {
-                $this->addFlash('warning', 'Cette categorie contient encore du materiel.');
+                $this->addFlash('warning', 'Cette catégorie contient encore du matériel.');
             } else {
+                $archiveService->logDeletion($category, $entityManager);
                 $entityManager->remove($category);
                 $entityManager->flush();
-                $this->addFlash('success', 'Categorie supprimee.');
+                $this->addFlash('success', 'Catégorie supprimée.');
             }
         }
 

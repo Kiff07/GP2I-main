@@ -20,8 +20,8 @@ class PurchaseOrdersType extends AbstractType
     {
         $builder
             ->add('supplier', EntityType::class, ['label' => 'Fournisseur', 'class' => Suppliers::class, 'choice_label' => 'name', 'placeholder' => 'Aucun', 'required' => false])
-            ->add('orderNumber', TextType::class, ['label' => 'Numero de commande'])
-            ->add('orderedBy', EntityType::class, ['label' => 'Commande par', 'class' => Users::class, 'choice_label' => 'fullName', 'placeholder' => 'Non renseigne', 'required' => false])
+            ->add('orderNumber', TextType::class, ['label' => 'Numéro de commande'])
+            ->add('orderedBy', EntityType::class, ['label' => 'Commande par', 'class' => Users::class, 'choice_label' => 'fullName', 'placeholder' => 'Non renseigné', 'required' => false])
             ->add('status', ChoiceType::class, ['label' => 'Statut', 'choices' => PurchaseOrders::statusChoices()])
             ->add('orderDate', DateType::class, ['label' => 'Date de commande', 'widget' => 'single_text'])
             ->add('expectedDate', DateType::class, ['label' => 'Date attendue', 'widget' => 'single_text', 'required' => false])

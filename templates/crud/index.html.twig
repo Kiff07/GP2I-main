@@ -12,6 +12,33 @@
     </section>
 
     <section class="content-panel">
+        {% if search_route is defined %}
+            <form class="filter-bar" method="get" action="{{ path(search_route) }}" data-controller="search" data-search-delay-value="400">
+                <div class="filter-field search-field">
+                    <label for="crud-q">Rechercher</label>
+                    <input type="search" id="crud-q" name="q" value="{{ search_q|default('') }}" placeholder="Rechercher..." autocomplete="off" data-action="input->search#queueSubmit">
+                </div>
+                {% if filter_choices is defined %}
+                    <div class="filter-field">
+                        <label for="crud-filter">{{ filter_label }}</label>
+                        <select id="crud-filter" name="{{ filter_name }}" data-action="change->search#queueSubmit">
+                            <option value="">Tous</option>
+                            {% for label, value in filter_choices %}
+                                <option value="{{ value }}" {% if filter_value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+                <div class="filter-actions">
+                    <button type="submit" class="button primary">Rechercher</button>
+                    <a class="button secondary" href="{{ path(search_route) }}">Réinitialiser</a>
+                </div>
+            </form>
+            {% if total is defined %}
+                <p class="result-count">{{ total }} résultat{{ total > 1 ? 's' : '' }}</p>
+            {% endif %}
+        {% endif %}
+
         {% if rows is not empty %}
             <div class="table-wrap">
                 <table>
@@ -39,7 +66,19 @@
                 </table>
             </div>
         {% else %}
-            <p class="empty">Aucun enregistrement trouve.</p>
+            <p class="empty">Aucun enregistrement trouvé.</p>
+        {% endif %}
+
+        {% if pages is defined and pages > 1 %}
+            <nav class="pagination" aria-label="Pagination">
+                {% if page > 1 %}
+                    <a class="button secondary small" href="{{ path(search_route, app.request.query.all|merge({page: page - 1})) }}">&laquo; Précédent</a>
+                {% endif %}
+                <span class="pagination-info">Page {{ page }} / {{ pages }}</span>
+                {% if page < pages %}
+                    <a class="button secondary small" href="{{ path(search_route, app.request.query.all|merge({page: page + 1})) }}">Suivant &raquo;</a>
+                {% endif %}
+            </nav>
         {% endif %}
     </section>
 {% endblock %}

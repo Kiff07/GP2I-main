@@ -8,16 +8,16 @@
             <p class="eyebrow">Gestion du parc</p>
             <h1>Tableau de bord</h1>
         </div>
-        <a class="button primary" href="{{ path('app_materials_new') }}">Ajouter un materiel</a>
+        <a class="button primary" href="{{ path('app_materials_new') }}">Ajouter un matériel</a>
     </section>
 
     <section class="stats-grid">
         <article class="stat-card">
-            <span>Materiels</span>
+            <span>Matériels</span>
             <strong>{{ materials_count }}</strong>
         </article>
         <article class="stat-card">
-            <span>Categories</span>
+            <span>Catégories</span>
             <strong>{{ categories_count }}</strong>
         </article>
         <article class="stat-card">
@@ -37,14 +37,101 @@
             <strong>{{ movements_count }}</strong>
         </article>
         <article class="stat-card">
+            <span>Emprunts en cours</span>
+            <strong>{{ active_loans_count|default(0) }}</strong>
+        </article>
+        <article class="stat-card">
             <span>Utilisateurs</span>
             <strong>{{ users_count }}</strong>
         </article>
     </section>
 
+    {% if status_counts is not empty %}
+        <section class="content-panel">
+            <div class="section-title"><h2>Répartition par statut</h2></div>
+            <div class="chart-bars">
+                {% for label, value in status_choices %}
+                    {% set count = status_counts[value]|default(0) %}
+                    {% set pct = materials_count > 0 ? (count / materials_count * 100)|round : 0 %}
+                    <div class="chart-row">
+                        <span class="chart-label"><span class="status status--{{ value }}">{{ label }}</span></span>
+                        <span class="chart-track"><span class="chart-fill fill-{{ value }}" style="width: {{ pct }}%"></span></span>
+                        <strong class="chart-count">{{ count }}</strong>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if movement_stats is defined %}
+        <section class="content-panel">
+            <div class="section-title"><h2>Mouvements des 6 derniers mois</h2></div>
+            {% set max_movement = 0 %}
+            {% for stat in movement_stats %}{% set max_movement = max(max_movement, stat.total) %}{% endfor %}
+            <div class="chart-cols" role="img" aria-label="Nombre de mouvements par mois">
+                {% for stat in movement_stats %}
+                    {% set height = max_movement > 0 ? (stat.total / max_movement * 100)|round : 0 %}
+                    <div class="chart-col">
+                        <strong>{{ stat.total }}</strong>
+                        <span class="chart-col-bar" style="height: {{ max(height, 2) }}%"></span>
+                        <small>{{ stat.label }}</small>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+
+    {% if overdue_loans is defined and overdue_loans is not empty %}
+        <section class="content-panel panel-alert">
+            <div class="section-title">
+                <h2>Emprunts en retard</h2>
+                <a href="{{ path('app_loans_index') }}">Voir les emprunts</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Matériel</th><th>Emprunteur</th><th>Retour prévu</th><th></th></tr></thead>
+                    <tbody>
+                        {% for loan in overdue_loans %}
+                            <tr>
+                                <td>{{ loan.material ? loan.material.name : '-' }}</td>
+                                <td>{{ loan.borrowerName }}</td>
+                                <td><span class="stock-low">{{ loan.dueDate ? loan.dueDate|date('d/m/Y') : '-' }}</span></td>
+                                <td class="actions"><a href="{{ path('app_loans_show', {'id': loan.id}) }}">Ouvrir</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
+
+    {% if low_stock is not empty %}
+        <section class="content-panel panel-alert">
+            <div class="section-title">
+                <h2>Alertes stock faible</h2>
+                <a href="{{ path('app_materials_index') }}">Voir l'inventaire</a>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Matériel</th><th>Référence</th><th>Reste</th><th></th></tr></thead>
+                    <tbody>
+                        {% for material in low_stock %}
+                            <tr>
+                                <td>{{ material.name }}</td>
+                                <td>{{ material.reference }}</td>
+                                <td><span class="stock-low">{{ material.quantity }}</span></td>
+                                <td class="actions"><a href="{{ path('app_materials_show', {'id': material.id}) }}">Ouvrir</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
+
     <section class="content-panel">
         <div class="section-title">
-            <h2>Derniers materiels</h2>
+            <h2>Derniers matériels</h2>
             <a href="{{ path('app_materials_index') }}">Voir tout</a>
         </div>
 
@@ -54,9 +141,9 @@
                     <thead>
                         <tr>
                             <th>Nom</th>
-                            <th>Reference</th>
+                            <th>Référence</th>
                             <th>Statut</th>
-                            <th>Categorie</th>
+                            <th>Catégorie</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -65,7 +152,7 @@
                             <tr>
                                 <td>{{ material.name }}</td>
                                 <td>{{ material.reference }}</td>
-                                <td><span class="status">{{ material.statusLabel }}</span></td>
+                                <td><span class="status status--{{ material.status }}">{{ material.statusLabel }}</span></td>
                                 <td>{{ material.category ? material.category.name : '-' }}</td>
                                 <td class="actions"><a href="{{ path('app_materials_show', {'id': material.id}) }}">Ouvrir</a></td>
                             </tr>
@@ -74,7 +161,7 @@
                 </table>
             </div>
         {% else %}
-            <p class="empty">Aucun materiel enregistre pour le moment.</p>
+            <p class="empty">Aucun matériel enregistre pour le moment.</p>
         {% endif %}
     </section>
 {% endblock %}

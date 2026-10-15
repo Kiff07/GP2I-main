@@ -53,8 +53,8 @@ class InventoryMovements
     private ?string $reason = null;
 
     public function __construct() { $this->performed_at = new \DateTime(); }
-    public function __toString(): string { return $this->movement_type.' - '.($this->material?->getName() ?? 'Materiel'); }
-    public static function typeChoices(): array { return ['Entree' => self::TYPE_IN, 'Sortie' => self::TYPE_OUT, 'Transfert' => self::TYPE_TRANSFER, 'Maintenance' => self::TYPE_MAINTENANCE]; }
+    public function __toString(): string { return $this->movement_type.' - '.($this->material?->getName() ?? 'Matériel'); }
+    public static function typeChoices(): array { return ['Entrée' => self::TYPE_IN, 'Sortie' => self::TYPE_OUT, 'Transfert' => self::TYPE_TRANSFER, 'Maintenance' => self::TYPE_MAINTENANCE]; }
     public function getTypeLabel(): string { return array_flip(self::typeChoices())[$this->movement_type] ?? (string) $this->movement_type; }
     public function getId(): ?int { return $this->id; }
     public function getMaterial(): ?Materials { return $this->material; }

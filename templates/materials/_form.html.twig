@@ -4,11 +4,13 @@
         {{ form_row(form.reference) }}
         {{ form_row(form.serialNumber) }}
         {{ form_row(form.quantity) }}
+        {{ form_row(form.alertThreshold) }}
         {{ form_row(form.status) }}
         {{ form_row(form.location) }}
         {{ form_row(form.purchaseDate) }}
         {{ form_row(form.purchasePrice) }}
         {{ form_row(form.category) }}
+        {{ form_row(form.supplier) }}
     </div>
     <div class="form-actions">
         <button class="button primary">{{ button_label|default('Enregistrer') }}</button>

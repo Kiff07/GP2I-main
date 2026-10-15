@@ -16,28 +16,23 @@ class SuppliersRepository extends ServiceEntityRepository
         parent::__construct($registry, Suppliers::class);
     }
 
-    //    /**
-    //     * @return Suppliers[] Returns an array of Suppliers objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Recherche par nom, contact ou email (parametre GET "q" de la liste).
+     *
+     * @return Suppliers[]
+     */
+    public function search(?string $q): array
+    {
+        $qb = $this->createQueryBuilder('s')->orderBy('s.name', 'ASC');
 
-    //    public function findOneBySomeField($value): ?Suppliers
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $q = null !== $q ? trim($q) : null;
+        if (null !== $q && '' !== $q) {
+            // NB : en DQL on utilise le nom de la propriete PHP (contact_name),
+            // pas le nom du getter (getContactName).
+            $qb->andWhere('LOWER(s.name) LIKE LOWER(:q) OR LOWER(s.contact_name) LIKE LOWER(:q) OR LOWER(s.email) LIKE LOWER(:q)')
+                ->setParameter('q', '%'.addcslashes($q, '%_\\').'%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

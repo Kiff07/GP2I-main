@@ -19,7 +19,7 @@ class DeliveriesType extends AbstractType
         $builder
             ->add('purchaseOrder', EntityType::class, ['label' => 'Commande', 'class' => PurchaseOrders::class, 'placeholder' => 'Aucune', 'required' => false])
             ->add('deliveryDate', DateType::class, ['label' => 'Date de livraison', 'widget' => 'single_text'])
-            ->add('receivedBy', EntityType::class, ['label' => 'Recu par', 'class' => Users::class, 'choice_label' => 'fullName', 'placeholder' => 'Non renseigne', 'required' => false])
+            ->add('receivedBy', EntityType::class, ['label' => 'Reçu par', 'class' => Users::class, 'choice_label' => 'fullName', 'placeholder' => 'Non renseigné', 'required' => false])
             ->add('note', TextareaType::class, ['label' => 'Note', 'required' => false, 'attr' => ['rows' => 4]])
         ;
     }

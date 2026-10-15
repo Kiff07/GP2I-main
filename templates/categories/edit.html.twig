@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier une categorie - GP2I{% endblock %}
+{% block title %}Modifier une catégorie - GP2I{% endblock %}
 
 {% block body %}
     <section class="page-heading">
         <div>
             <p class="eyebrow">Classement</p>
-            <h1>Modifier la categorie</h1>
+            <h1>Modifier la catégorie</h1>
         </div>
         {{ include('categories/_delete_form.html.twig') }}
     </section>
 
-    {{ include('categories/_form.html.twig', {'button_label': 'Mettre a jour'}) }}
+    {{ include('categories/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 {% endblock %}

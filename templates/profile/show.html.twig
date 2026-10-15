@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Compte</p>
+            <h1>Mon profil</h1>
+        </div>
+    </section>
+
+    <section class="detail-grid">
+        <div class="detail-item"><span>Nom complet</span><strong>{{ user.fullName ?? '-' }}</strong></div>
+        <div class="detail-item"><span>Email (identifiant de connexion)</span><strong>{{ user.email }}</strong></div>
+        <div class="detail-item"><span>Identifiant</span><strong>{{ user.username }}</strong></div>
+        <div class="detail-item"><span>Téléphone</span><strong>{{ user.phone ?? '-' }}</strong></div>
+        <div class="detail-item"><span>Rôles</span><strong>{{ user.roles|join(', ') }}</strong></div>
+        <div class="detail-item"><span>Compte créé le</span><strong>{{ user.createdAt ? user.createdAt|date('d/m/Y H:i') : '-' }}</strong></div>
+    </section>
+
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Sécurité</p>
+            <h2>Changer mon mot de passe</h2>
+        </div>
+    </section>
+
+    {{ form_start(form, {'attr': {'class': 'form-card'}}) }}
+        <div class="form-grid single">
+            {% for child in form %}
+                {% if child.vars.name != '_token' %}
+                    <div>{{ form_row(child) }}</div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="form-actions">
+            <button class="button primary" type="submit">Mettre à jour le mot de passe</button>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

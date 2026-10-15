@@ -1,26 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Materiels - GP2I{% endblock %}
+{% block title %}Matériels - GP2I{% endblock %}
 
 {% block body %}
     <section class="page-heading">
         <div>
             <p class="eyebrow">Inventaire</p>
-            <h1>Materiels</h1>
+            <h1>Matériels</h1>
         </div>
-        <a class="button primary" href="{{ path('app_materials_new') }}">Nouveau materiel</a>
+        <div class="button-row">
+            {% if is_granted('ROLE_MANAGER') %}
+                <a class="button secondary" href="{{ path('app_materials_export', app.request.query.all) }}">Exporter CSV</a>
+                <a class="button primary" href="{{ path('app_materials_new') }}">Nouveau matériel</a>
+            {% endif %}
+        </div>
     </section>
 
     <section class="content-panel">
-        <form class="filter-bar" method="get" action="{{ path('app_materials_index') }}">
+        {# Recherche instantanee grace au controleur Stimulus "search" #}
+        <form class="filter-bar" method="get" action="{{ path('app_materials_index') }}"
+              data-controller="search" data-search-delay-value="400">
             <div class="filter-field search-field">
                 <label for="q">Rechercher</label>
-                <input type="text" id="q" name="q" value="{{ filters.q|default('') }}" placeholder="Nom, reference, serie, localisation...">
+                <input type="search" id="q" name="q" value="{{ filters.q|default('') }}"
+                       placeholder="Nom, reference, serie, localisation, catégorie..."
+                       autocomplete="off" data-action="input->search#queueSubmit">
             </div>
 
             <div class="filter-field">
                 <label for="status">Statut</label>
-                <select id="status" name="status">
+                <select id="status" name="status" data-action="change->search#queueSubmit">
                     <option value="">Tous les statuts</option>
                     {% for label, value in statusChoices %}
                         <option value="{{ value }}" {% if filters.status is defined and filters.status == value %}selected{% endif %}>{{ label }}</option>
@@ -29,8 +38,8 @@
             </div>
 
             <div class="filter-field">
-                <label for="category">Categorie</label>
-                <select id="category" name="category">
+                <label for="category">Catégorie</label>
+                <select id="category" name="category" data-action="change->search#queueSubmit">
                     <option value="">Toutes</option>
                     {% for category in categories %}
                         <option value="{{ category.id }}" {% if filters.category is defined and filters.category == category.id %}selected{% endif %}>{{ category.name }}</option>
@@ -40,7 +49,7 @@
 
             <div class="filter-field">
                 <label for="supplier">Fournisseur</label>
-                <select id="supplier" name="supplier">
+                <select id="supplier" name="supplier" data-action="change->search#queueSubmit">
                     <option value="">Tous</option>
                     {% for supplier in suppliers %}
                         <option value="{{ supplier.id }}" {% if filters.supplier is defined and filters.supplier == supplier.id %}selected{% endif %}>{{ supplier.name }}</option>
@@ -50,9 +59,14 @@
 
             <div class="filter-actions">
                 <button type="submit" class="button primary">Rechercher</button>
-                <a class="button secondary" href="{{ path('app_materials_index') }}">Reinitialiser</a>
+                <a class="button secondary" href="{{ path('app_materials_index') }}">Réinitialiser</a>
             </div>
         </form>
+
+        <p class="result-count" aria-live="polite">
+            {{ total }} matériel{{ total > 1 ? 's' : '' }} trouvé{{ total > 1 ? 's' : '' }}
+            {% if filters.q %}pour &laquo; {{ filters.q }} &raquo;{% endif %}
+        </p>
 
         {% if materials is not empty %}
             <div class="table-wrap">
@@ -60,34 +74,60 @@
                     <thead>
                         <tr>
                             <th>Nom</th>
-                            <th>Reference</th>
-                            <th>Serie</th>
-                            <th>Quantite</th>
+                            <th>Référence</th>
+                            <th>Série</th>
+                            <th>Quantité</th>
                             <th>Statut</th>
-                            <th>Categorie</th>
+                            <th>Catégorie</th>
+                            <th>Fournisseur</th>
+                            <th>Emplacement</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for material in materials %}
                             <tr>
-                                <td>{{ material.name }}</td>
+                                <td><strong>{{ material.name }}</strong></td>
                                 <td>{{ material.reference }}</td>
-                                <td>{{ material.serialNumber }}</td>
-                                <td>{{ material.quantity }}</td>
-                                <td><span class="status">{{ material.statusLabel }}</span></td>
+                                <td>{{ material.serialNumber ?: '-' }}</td>
+                                <td>
+                                    <span class="{{ material.isLowStock ? 'stock-low' : '' }}"
+                                          {% if material.isLowStock %}title="Stock faible (seuil : {{ material.alertThreshold }})"{% endif %}>
+                                        {{ material.quantity }}{% if material.quantity == 0 %} (rupture){% elseif material.isLowStock %} (faible){% endif %}
+                                    </span>
+                                </td>
+                                <td><span class="status status--{{ material.status }}">{{ material.statusLabel }}</span></td>
                                 <td>{{ material.category ? material.category.name : '-' }}</td>
+                                <td>{{ material.supplier ? material.supplier.name : '-' }}</td>
+                                <td>{{ material.location ?: '-' }}</td>
                                 <td class="actions">
                                     <a href="{{ path('app_materials_show', {'id': material.id}) }}">Voir</a>
-                                    <a href="{{ path('app_materials_edit', {'id': material.id}) }}">Modifier</a>
+                                    {% if is_granted('ROLE_MANAGER') %}
+                                        <a href="{{ path('app_materials_edit', {'id': material.id}) }}">Modifier</a>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
+
+            {% if pages > 1 %}
+                <nav class="pagination" aria-label="Pagination">
+                    {% if page > 1 %}
+                        <a class="button secondary small" href="{{ path('app_materials_index', app.request.query.all|merge({page: page - 1})) }}">&laquo; Précédent</a>
+                    {% endif %}
+                    <span class="pagination-info">Page {{ page }} / {{ pages }}</span>
+                    {% if page < pages %}
+                        <a class="button secondary small" href="{{ path('app_materials_index', app.request.query.all|merge({page: page + 1})) }}">Suivant &raquo;</a>
+                    {% endif %}
+                </nav>
+            {% endif %}
         {% else %}
-            <p class="empty">Aucun materiel trouve.</p>
+            <div class="empty-state">
+                <p class="empty">Aucun matériel trouvé avec ces criteres.</p>
+                <a class="button secondary" href="{{ path('app_materials_index') }}">Réinitialiser les filtres</a>
+            </div>
         {% endif %}
     </section>
 {% endblock %}

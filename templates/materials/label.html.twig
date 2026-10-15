@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Étiquette {{ material.reference }} - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading no-print">
+        <div>
+            <p class="eyebrow">Étiquette matériel</p>
+            <h1>{{ material.name }}</h1>
+        </div>
+        <div class="button-row">
+            <button class="button primary" type="button" onclick="window.print()">Imprimer l'étiquette</button>
+            <a class="button secondary" href="{{ path('app_materials_show', {'id': material.id}) }}">Retour à la fiche</a>
+        </div>
+    </section>
+
+    <div class="label-card">
+        <div class="label-qr">
+            {# QR code généré par un service en ligne gratuit : il encode l'adresse de la fiche. #}
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ absolute_url(path('app_materials_show', {'id': material.id}))|url_encode }}"
+                 alt="QR code vers la fiche de {{ material.name }}" width="200" height="200">
+        </div>
+        <div class="label-info">
+            <strong class="label-name">{{ material.name }}</strong>
+            <span class="label-ref">{{ material.reference }}</span>
+            <span>{{ material.category ? material.category.name : '' }}</span>
+            <span>{{ material.location ?: '' }}</span>
+            <span class="label-brand">GP2I — Gestion du matériel</span>
+        </div>
+    </div>
+
+    <p class="empty no-print">Imprimez cette page, découpez l'étiquette et collez-la sur le matériel : un scan du QR code ouvre directement sa fiche (après connexion).</p>
+{% endblock %}

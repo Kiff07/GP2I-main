@@ -18,11 +18,11 @@ class PurchaseItemsType extends AbstractType
     {
         $builder
             ->add('purchaseOrder', EntityType::class, ['label' => 'Commande', 'class' => PurchaseOrders::class])
-            ->add('materialName', TextType::class, ['label' => 'Materiel'])
-            ->add('materialReference', TextType::class, ['label' => 'Reference', 'required' => false])
-            ->add('quantity', IntegerType::class, ['label' => 'Quantite'])
+            ->add('materialName', TextType::class, ['label' => 'Matériel'])
+            ->add('materialReference', TextType::class, ['label' => 'Référence', 'required' => false])
+            ->add('quantity', IntegerType::class, ['label' => 'Quantité'])
             ->add('unitPrice', MoneyType::class, ['label' => 'Prix unitaire', 'currency' => 'EUR', 'required' => false])
-            ->add('receivedQuantity', IntegerType::class, ['label' => 'Quantite recue'])
+            ->add('receivedQuantity', IntegerType::class, ['label' => 'Quantité reçue'])
         ;
     }
 

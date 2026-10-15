@@ -20,7 +20,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-#[AsCommand(name: 'app:load-demo-data', description: 'Charge des donnees de demonstration GP2I.')]
+#[AsCommand(name: 'app:load-demo-data', description: 'Charge des donnees de démonstration GP2I.')]
 class LoadDemoDataCommand extends Command
 {
     public function __construct(
@@ -34,7 +34,7 @@ class LoadDemoDataCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($this->usersRepository->findOneBy(['email' => 'admin@gp2i.local'])) {
-            $output->writeln('Les donnees de demonstration existent deja.');
+            $output->writeln('Les donnees de démonstration existent deja.');
 
             return Command::SUCCESS;
         }
@@ -112,7 +112,7 @@ class LoadDemoDataCommand extends Command
             ->setPurchaseOrder($order)
             ->setDeliveryDate(new \DateTime('-18 days'))
             ->setReceivedBy($manager)
-            ->setNote('Livraison complete, materiel controle.');
+            ->setNote('Livraison complete, matériel controle.');
 
         $movement = (new InventoryMovements())
             ->setMaterial($laptop)
@@ -126,7 +126,7 @@ class LoadDemoDataCommand extends Command
         $image = (new AssetImages())
             ->setMaterial($laptop)
             ->setFilename('demo-laptop.jpg')
-            ->setCaption('Photo de demonstration');
+            ->setCaption('Photo de démonstration');
 
         $archive = (new Archives())
             ->setEntity('materials')
@@ -140,7 +140,7 @@ class LoadDemoDataCommand extends Command
         }
 
         $this->entityManager->flush();
-        $output->writeln('Donnees de demonstration chargees.');
+        $output->writeln('Données de démonstration chargees.');
 
         return Command::SUCCESS;
     }

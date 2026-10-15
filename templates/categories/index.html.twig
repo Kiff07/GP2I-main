@@ -1,17 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Categories - GP2I{% endblock %}
+{% block title %}Catégories - GP2I{% endblock %}
 
 {% block body %}
     <section class="page-heading">
         <div>
             <p class="eyebrow">Classement</p>
-            <h1>Categories</h1>
+            <h1>Catégories</h1>
         </div>
-        <a class="button primary" href="{{ path('app_categories_new') }}">Nouvelle categorie</a>
+        <a class="button primary" href="{{ path('app_categories_new') }}">Nouvelle catégorie</a>
     </section>
 
     <section class="content-panel">
+        <form class="filter-bar" method="get" action="{{ path('app_categories_index') }}" data-controller="search" data-search-delay-value="400">
+            <div class="filter-field search-field">
+                <label for="q">Rechercher</label>
+                <input type="search" id="q" name="q" value="{{ q|default('') }}" placeholder="Nom ou description..." autocomplete="off" data-action="input->search#queueSubmit">
+            </div>
+            <div class="filter-actions">
+                <button type="submit" class="button primary">Rechercher</button>
+                <a class="button secondary" href="{{ path('app_categories_index') }}">Réinitialiser</a>
+            </div>
+        </form>
+
         {% if categories is not empty %}
             <div class="table-wrap">
                 <table>
@@ -19,7 +30,7 @@
                         <tr>
                             <th>Nom</th>
                             <th>Description</th>
-                            <th>Materiels</th>
+                            <th>Matériels</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -39,7 +50,7 @@
                 </table>
             </div>
         {% else %}
-            <p class="empty">Aucune categorie trouvee.</p>
+            <p class="empty">Aucune catégorie trouvée.</p>
         {% endif %}
     </section>
 {% endblock %}

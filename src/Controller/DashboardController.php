@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Materials;
 use App\Repository\CategoriesRepository;
+use App\Repository\LoansRepository;
 use App\Repository\DeliveriesRepository;
 use App\Repository\InventoryMovementsRepository;
 use App\Repository\MaterialsRepository;
@@ -24,6 +26,7 @@ class DashboardController extends AbstractController
         DeliveriesRepository $deliveriesRepository,
         InventoryMovementsRepository $inventoryMovementsRepository,
         UsersRepository $usersRepository,
+        LoansRepository $loansRepository,
     ): Response {
         return $this->render('dashboard/index.html.twig', [
             'materials' => $materialsRepository->findBy([], ['id' => 'DESC'], 5),
@@ -34,6 +37,12 @@ class DashboardController extends AbstractController
             'deliveries_count' => $deliveriesRepository->count([]),
             'movements_count' => $inventoryMovementsRepository->count([]),
             'users_count' => $usersRepository->count([]),
+            'status_counts' => $materialsRepository->countByStatus(),
+            'movement_stats' => $inventoryMovementsRepository->countByMonth(6),
+            'overdue_loans' => $loansRepository->findOverdue(),
+            'active_loans_count' => $loansRepository->countActive(),
+            'status_choices' => Materials::statusChoices(),
+            'low_stock' => $materialsRepository->findLowStock(),
         ]);
     }
 }

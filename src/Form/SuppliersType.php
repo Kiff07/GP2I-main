@@ -27,7 +27,7 @@ class SuppliersType extends AbstractType
                 'required' => false,
             ])
             ->add('phone', TextType::class, [
-                'label' => 'Telephone',
+                'label' => 'Téléphone',
                 'required' => false,
             ])
             ->add('address', TextareaType::class, [

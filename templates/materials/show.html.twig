@@ -1,28 +1,63 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ material.name }} - GP2I{% endblock %}
+{% block title %}{{ material.name }} - GP2I
+    {% if material.assetImages is not empty %}
+        <section class="content-panel">
+            <div class="section-title"><h2>Photos</h2></div>
+            <div class="gallery">
+                {% for image in material.assetImages %}
+                    <figure class="gallery-item">
+                        <img src="{{ asset('uploads/' ~ image.filename) }}" alt="{{ image.caption ?? material.name }}" loading="lazy" onerror="this.closest('figure').style.display='none'">
+                        {% if image.caption %}<figcaption>{{ image.caption }}</figcaption>{% endif %}
+                    </figure>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}
 
 {% block body %}
     <section class="page-heading">
         <div>
-            <p class="eyebrow">Fiche materiel</p>
+            <p class="eyebrow">Fiche matériel</p>
             <h1>{{ material.name }}</h1>
         </div>
         <div class="button-row">
+            <a class="button secondary" href="{{ path('app_materials_label', {'id': material.id}) }}">Étiquette QR</a>
             <a class="button secondary" href="{{ path('app_materials_edit', {'id': material.id}) }}">Modifier</a>
             {{ include('materials/_delete_form.html.twig') }}
         </div>
     </section>
 
+    {% if material.isLowStock %}
+        <div class="alert alert-warning" role="alert">Stock faible : il reste {{ material.quantity }} exemplaire(s) de ce matériel (seuil d'alerte : {{ material.alertThreshold }}).</div>
+    {% endif %}
+
     <section class="detail-grid">
-        <div class="detail-item"><span>Reference</span><strong>{{ material.reference }}</strong></div>
-        <div class="detail-item"><span>Numero de serie</span><strong>{{ material.serialNumber }}</strong></div>
-        <div class="detail-item"><span>Quantite</span><strong>{{ material.quantity }}</strong></div>
-        <div class="detail-item"><span>Statut</span><strong>{{ material.statusLabel }}</strong></div>
+        <div class="detail-item"><span>Référence</span><strong>{{ material.reference }}</strong></div>
+        <div class="detail-item"><span>Numéro de série</span><strong>{{ material.serialNumber }}</strong></div>
+        <div class="detail-item"><span>Quantité</span><strong>{{ material.quantity }}</strong></div>
+        <div class="detail-item"><span>Seuil d'alerte</span><strong>{{ material.alertThreshold }}</strong></div>
+        <div class="detail-item"><span>Statut</span><strong><span class="status status--{{ material.status }}">{{ material.statusLabel }}</span></strong></div>
         <div class="detail-item"><span>Emplacement</span><strong>{{ material.location ?: '-' }}</strong></div>
-        <div class="detail-item"><span>Categorie</span><strong>{{ material.category ? material.category.name : '-' }}</strong></div>
-        <div class="detail-item"><span>Date d achat</span><strong>{{ material.purchaseDate ? material.purchaseDate|date('d/m/Y') : '-' }}</strong></div>
-        <div class="detail-item"><span>Prix d achat</span><strong>{{ material.purchasePrice ? material.purchasePrice|number_format(2, ',', ' ') ~ ' EUR' : '-' }}</strong></div>
-        <div class="detail-item"><span>Cree le</span><strong>{{ material.createdAt ? material.createdAt|date('d/m/Y H:i') : '-' }}</strong></div>
+        <div class="detail-item"><span>Catégorie</span><strong>{{ material.category ? material.category.name : '-' }}</strong></div>
+        <div class="detail-item"><span>Fournisseur</span><strong>{{ material.supplier ? material.supplier.name : '-' }}</strong></div>
+        <div class="detail-item"><span>Date d'achat</span><strong>{{ material.purchaseDate ? material.purchaseDate|date('d/m/Y') : '-' }}</strong></div>
+        <div class="detail-item"><span>Prix d'achat</span><strong>{{ material.purchasePrice ? material.purchasePrice|number_format(2, ',', ' ') ~ ' EUR' : '-' }}</strong></div>
+        <div class="detail-item"><span>Créé le</span><strong>{{ material.createdAt ? material.createdAt|date('d/m/Y H:i') : '-' }}</strong></div>
     </section>
+
+    {% if material.assetImages is not empty %}
+        <section class="content-panel">
+            <div class="section-title"><h2>Photos</h2></div>
+            <div class="gallery">
+                {% for image in material.assetImages %}
+                    <figure class="gallery-item">
+                        <img src="{{ asset('uploads/' ~ image.filename) }}" alt="{{ image.caption ?? material.name }}" loading="lazy" onerror="this.closest('figure').style.display='none'">
+                        {% if image.caption %}<figcaption>{{ image.caption }}</figcaption>{% endif %}
+                    </figure>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
 {% endblock %}

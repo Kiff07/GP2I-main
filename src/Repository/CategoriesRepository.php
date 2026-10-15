@@ -16,28 +16,21 @@ class CategoriesRepository extends ServiceEntityRepository
         parent::__construct($registry, Categories::class);
     }
 
-    //    /**
-    //     * @return Categories[] Returns an array of Categories objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Recherche par nom ou description (parametre GET "q" de la liste).
+     *
+     * @return Categories[]
+     */
+    public function search(?string $q): array
+    {
+        $qb = $this->createQueryBuilder('c')->orderBy('c.name', 'ASC');
 
-    //    public function findOneBySomeField($value): ?Categories
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $q = null !== $q ? trim($q) : null;
+        if (null !== $q && '' !== $q) {
+            $qb->andWhere('LOWER(c.name) LIKE LOWER(:q) OR LOWER(c.description) LIKE LOWER(:q)')
+                ->setParameter('q', '%'.addcslashes($q, '%_\\').'%');
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

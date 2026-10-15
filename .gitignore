@@ -18,3 +18,7 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+# Photos envoyees via l'interface
+/public/uploads/*
+!/public/uploads/.gitkeep

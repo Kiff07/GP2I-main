@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Emprunts - GP2I{% endblock %}
+
+{% block body %}
+    <section class="page-heading">
+        <div>
+            <p class="eyebrow">Parc</p>
+            <h1>Emprunts</h1>
+        </div>
+        {% if is_granted('ROLE_MANAGER') %}
+            <a class="button primary" href="{{ path('app_loans_new') }}">Nouvel emprunt</a>
+        {% endif %}
+    </section>
+
+    <section class="content-panel">
+        {% if loans is not empty %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Matériel</th>
+                            <th>Emprunteur</th>
+                            <th>Emprunté le</th>
+                            <th>Retour prévu</th>
+                            <th>Statut</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in loans %}
+                            <tr>
+                                <td><strong>{{ loan.material ? loan.material.name : '-' }}</strong></td>
+                                <td>{{ loan.borrowerName }}</td>
+                                <td>{{ loan.borrowedAt ? loan.borrowedAt|date('d/m/Y') : '-' }}</td>
+                                <td>{{ loan.dueDate ? loan.dueDate|date('d/m/Y') : '-' }}</td>
+                                <td><span class="status status--{{ loan.statusSlug }}">{{ loan.statusLabel }}</span></td>
+                                <td class="actions">
+                                    <a href="{{ path('app_loans_show', {'id': loan.id}) }}">Voir</a>
+                                    {% if is_granted('ROLE_MANAGER') %}
+                                        <a href="{{ path('app_loans_edit', {'id': loan.id}) }}">Modifier</a>
+                                        {% if not loan.isReturned %}
+                                            <form class="inline-form" method="post" action="{{ path('app_loans_return', {'id': loan.id}) }}">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('return' ~ loan.id) }}">
+                                                <button class="link-button" type="submit">Retourner</button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p class="empty">Aucun emprunt enregistré.</p>
+                {% if is_granted('ROLE_MANAGER') %}
+                    <a class="button primary" href="{{ path('app_loans_new') }}">Enregistrer un emprunt</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

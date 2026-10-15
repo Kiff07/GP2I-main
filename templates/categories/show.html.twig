@@ -5,7 +5,7 @@
 {% block body %}
     <section class="page-heading">
         <div>
-            <p class="eyebrow">Categorie</p>
+            <p class="eyebrow">Catégorie</p>
             <h1>{{ category.name }}</h1>
         </div>
         <div class="button-row">
@@ -20,7 +20,7 @@
 
     <section class="content-panel">
         <div class="section-title">
-            <h2>Materiels associes</h2>
+            <h2>Matériels associes</h2>
         </div>
         {% if category.materials is not empty %}
             <div class="table-wrap">
@@ -28,7 +28,7 @@
                     <thead>
                         <tr>
                             <th>Nom</th>
-                            <th>Reference</th>
+                            <th>Référence</th>
                             <th>Statut</th>
                             <th></th>
                         </tr>
@@ -38,7 +38,7 @@
                             <tr>
                                 <td>{{ material.name }}</td>
                                 <td>{{ material.reference }}</td>
-                                <td><span class="status">{{ material.statusLabel }}</span></td>
+                                <td><span class="status status--{{ material.status }}">{{ material.statusLabel }}</span></td>
                                 <td class="actions"><a href="{{ path('app_materials_show', {'id': material.id}) }}">Voir</a></td>
                             </tr>
                         {% endfor %}
@@ -46,7 +46,7 @@
                 </table>
             </div>
         {% else %}
-            <p class="empty">Aucun materiel associe.</p>
+            <p class="empty">Aucun matériel associé.</p>
         {% endif %}
     </section>
 {% endblock %}

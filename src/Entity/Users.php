@@ -72,6 +72,10 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Archives::class, mappedBy: 'createdBy')]
     private Collection $archives;
 
+    /** @var Collection<int, Loans> */
+    #[ORM\OneToMany(targetEntity: Loans::class, mappedBy: 'performedBy')]
+    private Collection $loans;
+
     public function __construct()
     {
         $this->created_at = new \DateTimeImmutable();
@@ -79,6 +83,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         $this->deliveries = new ArrayCollection();
         $this->inventoryMovements = new ArrayCollection();
         $this->archives = new ArrayCollection();
+        $this->loans = new ArrayCollection();
     }
 
     public function __toString(): string

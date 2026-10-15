@@ -14,3 +14,10 @@ Ajouter une barre de recherche professionnelle et des filtres sur la page des ma
 - [x] 4. Mettre à jour `templates/materials/index.html.twig` avec la barre de recherche
 - [x] 5. Ajouter les styles de la barre de recherche dans `assets/styles/app.css`
 - [x] 6. Vérifier la syntaxe PHP et Twig (lint)
+
+---
+## Suite (voir AMELIORATIONS.md)
+- [x] Recherche etendue aux categories et aux fournisseurs + recherche globale
+- [x] Recherche instantanee (Stimulus), pagination, echappement des jokers LIKE
+- [x] Authentification, roles, mouvements de stock effectifs, suppressions manquantes
+- [ ] Idees restantes (copier-coller dans AMELIORATIONS.md §5) : upload d'images, export CSV, mode sombre

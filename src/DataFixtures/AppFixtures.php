@@ -15,7 +15,7 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create('fr_FR');
 
-        // 1. Création de quelques Catégories
+        // 1. Création de quelques Categories
         $categories = [];
         $categoryNames = ['Informatique', 'Bureautique', 'Audiovisuel', 'Mobilier', 'Outillage'];
         
