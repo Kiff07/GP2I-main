@@ -38,7 +38,7 @@ class SuppliersController extends AbstractController
             $entityManager->persist($supplier);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Fournisseur cree avec succes.');
+            $this->addFlash('success', 'Fournisseur créé avec succes.');
 
             return $this->redirectToRoute('app_suppliers_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -67,7 +67,7 @@ class SuppliersController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            $this->addFlash('success', 'Fournisseur modifie avec succes.');
+            $this->addFlash('success', 'Fournisseur modifié avec succes.');
 
             return $this->redirectToRoute('app_suppliers_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -84,11 +84,11 @@ class SuppliersController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$supplier->getId(), (string) $request->request->get('_token'))) {
             if ($supplier->getMaterials()->count() > 0) {
-                $this->addFlash('warning', 'Ce fournisseur est encore associe a du materiel.');
+                $this->addFlash('warning', 'Ce fournisseur est encore associé a du matériel.');
             } else {
                 $entityManager->remove($supplier);
                 $entityManager->flush();
-                $this->addFlash('success', 'Fournisseur supprime.');
+                $this->addFlash('success', 'Fournisseur supprimé.');
             }
         }
 

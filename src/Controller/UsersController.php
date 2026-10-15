@@ -25,7 +25,7 @@ class UsersController extends AbstractController
         return $this->render('crud/index.html.twig', [
             'title' => 'Utilisateurs',
             'new_path' => 'app_users_new',
-            'headers' => ['Identifiant', 'Email', 'Nom complet', 'Telephone'],
+            'headers' => ['Identifiant', 'Email', 'Nom complet', 'Téléphone'],
             'rows' => array_map(fn (Users $user) => [
                 'entity' => $user,
                 'show_path' => 'app_users_show',
@@ -45,14 +45,14 @@ class UsersController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $plainPassword = (string) $form->get('plainPassword')->getData();
             if (mb_strlen($plainPassword) < 8) {
-                $this->addFlash('error', 'Le mot de passe doit contenir au moins 8 caracteres.');
+                $this->addFlash('error', 'Le mot de passe doit contenir au moins 8 caractères.');
 
                 return $this->render('crud/form.html.twig', ['title' => 'Nouvel utilisateur', 'form' => $form, 'back_path' => 'app_users_index']);
             }
             $user->setPassword($hasher->hashPassword($user, $plainPassword));
             $em->persist($user);
             $em->flush();
-            $this->addFlash('success', 'Utilisateur cree.');
+            $this->addFlash('success', 'Utilisateur créé.');
 
             return $this->redirectToRoute('app_users_index');
         }
@@ -73,8 +73,8 @@ class UsersController extends AbstractController
                 'Identifiant' => $user->getUsername(),
                 'Email' => $user->getEmail(),
                 'Nom complet' => $user->getFullName() ?: '-',
-                'Telephone' => $user->getPhone() ?: '-',
-                'Roles' => implode(', ', $user->getRoles()),
+                'Téléphone' => $user->getPhone() ?: '-',
+                'Rôles' => implode(', ', $user->getRoles()),
             ],
         ]);
     }
@@ -90,7 +90,7 @@ class UsersController extends AbstractController
             $plainPassword = $form->get('plainPassword')->getData();
             if (is_string($plainPassword) && '' !== $plainPassword) {
                 if (mb_strlen($plainPassword) < 8) {
-                    $this->addFlash('error', 'Le mot de passe doit contenir au moins 8 caracteres.');
+                    $this->addFlash('error', 'Le mot de passe doit contenir au moins 8 caractères.');
 
                     return $this->render('crud/form.html.twig', ['title' => 'Modifier utilisateur', 'form' => $form, 'back_path' => 'app_users_index']);
                 }
@@ -98,7 +98,7 @@ class UsersController extends AbstractController
             }
             $user->setUpdatedAt(new \DateTime());
             $em->flush();
-            $this->addFlash('success', 'Utilisateur modifie.');
+            $this->addFlash('success', 'Utilisateur modifié.');
 
             return $this->redirectToRoute('app_users_index');
         }
@@ -115,7 +115,7 @@ class UsersController extends AbstractController
             } else {
                 $em->remove($user);
                 $em->flush();
-                $this->addFlash('success', 'Utilisateur supprime.');
+                $this->addFlash('success', 'Utilisateur supprimé.');
             }
         }
 

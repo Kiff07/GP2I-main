@@ -17,11 +17,11 @@ class ArchivesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('entity', TextType::class, ['label' => 'Entite'])
+            ->add('entity', TextType::class, ['label' => 'Entité'])
             ->add('entityId', IntegerType::class, ['label' => 'ID entite'])
             ->add('action', TextType::class, ['label' => 'Action'])
-            ->add('data', TextareaType::class, ['label' => 'Donnees JSON', 'required' => false, 'mapped' => false])
-            ->add('createdBy', EntityType::class, ['label' => 'Cree par', 'class' => Users::class, 'choice_label' => 'fullName', 'placeholder' => 'Systeme', 'required' => false])
+            ->add('data', TextareaType::class, ['label' => 'Données JSON', 'required' => false, 'mapped' => false])
+            ->add('createdBy', EntityType::class, ['label' => 'Créé par', 'class' => Users::class, 'choice_label' => 'fullName', 'placeholder' => 'Système', 'required' => false])
         ;
     }
 

@@ -16,19 +16,30 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class PurchaseOrdersController extends AbstractController
 {
     #[Route('/', name: 'app_purchase_orders_index', methods: ['GET'])]
-    public function index(PurchaseOrdersRepository $repository): Response
+    public function index(Request $request, PurchaseOrdersRepository $repository): Response
     {
+        $result = $repository->searchPaginated($request->query->get('q'), $request->query->get('status'), $request->query->getInt('page', 1));
+
         return $this->render('crud/index.html.twig', [
             'title' => 'Commandes',
             'new_path' => 'app_purchase_orders_new',
-            'headers' => ['Numero', 'Fournisseur', 'Statut', 'Date', 'Total'],
+            'search_route' => 'app_purchase_orders_index',
+            'search_q' => $request->query->get('q'),
+            'filter_name' => 'status',
+            'filter_label' => 'Statut',
+            'filter_choices' => \App\Entity\PurchaseOrders::statusChoices(),
+            'filter_value' => $request->query->get('status'),
+            'total' => $result['total'],
+            'page' => $result['page'],
+            'pages' => $result['pages'],
+            'headers' => ['Numéro', 'Fournisseur', 'Statut', 'Date', 'Total'],
             'rows' => array_map(fn (PurchaseOrders $order) => [
                 'entity' => $order,
                 'show_path' => 'app_purchase_orders_show',
                 'edit_path' => 'app_purchase_orders_edit',
             'delete_path' => 'app_purchase_orders_delete',
                 'values' => [$order->getOrderNumber(), $order->getSupplier()?->getName() ?: '-', $order->getStatusLabel(), $order->getOrderDate()?->format('d/m/Y'), $order->getTotalAmount() ?: '-'],
-            ], $repository->findBy([], ['id' => 'DESC'])),
+            ], $result['items']),
         ]);
     }
 
@@ -42,7 +53,7 @@ class PurchaseOrdersController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($order);
             $em->flush();
-            $this->addFlash('success', 'Commande creee.');
+            $this->addFlash('success', 'Commande créée.');
             return $this->redirectToRoute('app_purchase_orders_index');
         }
         return $this->render('crud/form.html.twig', ['title' => 'Nouvelle commande', 'form' => $form, 'back_path' => 'app_purchase_orders_index']);
@@ -57,7 +68,7 @@ class PurchaseOrdersController extends AbstractController
             'back_path' => 'app_purchase_orders_index',
             'entity' => $order,
             'fields' => [
-                'Numero' => $order->getOrderNumber(),
+                'Numéro' => $order->getOrderNumber(),
                 'Fournisseur' => $order->getSupplier()?->getName() ?: '-',
                 'Commande par' => $order->getOrderedBy()?->getFullName() ?: '-',
                 'Statut' => $order->getStatusLabel(),
@@ -77,7 +88,7 @@ class PurchaseOrdersController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
-            $this->addFlash('success', 'Commande modifiee.');
+            $this->addFlash('success', 'Commande modifiée.');
             return $this->redirectToRoute('app_purchase_orders_index');
         }
         return $this->render('crud/form.html.twig', ['title' => 'Modifier commande', 'form' => $form, 'back_path' => 'app_purchase_orders_index']);
@@ -90,7 +101,7 @@ class PurchaseOrdersController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$order->getId(), (string) $request->request->get('_token'))) {
             $em->remove($order);
             $em->flush();
-            $this->addFlash('success', 'Commande supprimee.');
+            $this->addFlash('success', 'Commande supprimée.');
         }
 
         return $this->redirectToRoute('app_purchase_orders_index', [], Response::HTTP_SEE_OTHER);

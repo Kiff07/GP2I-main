@@ -15,13 +15,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 /**
- * Cree (ou met a jour) un compte administrateur en ligne de commande.
+ * Créé (ou met a jour) un compte administrateur en ligne de commande.
  *
  * Exemple : php bin/console app:create-admin admin@gp2i.local admin
  * Indispensable depuis que tout le site exige une connexion : sans compte,
  * personne ne peut se connecter la premiere fois.
  */
-#[AsCommand(name: 'app:create-admin', description: 'Cree ou met a jour un compte administrateur GP2I.')]
+#[AsCommand(name: 'app:create-admin', description: 'Créé ou met a jour un compte administrateur GP2I.')]
 class CreateAdminCommand extends Command
 {
     public function __construct(
@@ -52,11 +52,11 @@ class CreateAdminCommand extends Command
         }
 
         $helper = $this->getHelper('question');
-        $password = (string) $helper->ask($input, $output, (new Question('Mot de passe (min. 8 caracteres) : '))->setHidden(true)->setHiddenFallback(false));
+        $password = (string) $helper->ask($input, $output, (new Question('Mot de passe (min. 8 caractères) : '))->setHidden(true)->setHiddenFallback(false));
         $confirm = (string) $helper->ask($input, $output, (new Question('Confirmez le mot de passe : '))->setHidden(true)->setHiddenFallback(false));
 
         if (mb_strlen($password) < 8) {
-            $io->error('Le mot de passe doit contenir au moins 8 caracteres.');
+            $io->error('Le mot de passe doit contenir au moins 8 caractères.');
 
             return Command::FAILURE;
         }
@@ -80,7 +80,7 @@ class CreateAdminCommand extends Command
 
         $io->success(sprintf(
             '%s : %s (%s). Connectez-vous sur /login.',
-            $isNew ? 'Administrateur cree' : 'Administrateur mis a jour',
+            $isNew ? 'Administrateur créé' : 'Administrateur mis a jour',
             $username,
             $email
         ));

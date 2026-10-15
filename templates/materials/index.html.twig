@@ -1,16 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Materiels - GP2I{% endblock %}
+{% block title %}Matériels - GP2I{% endblock %}
 
 {% block body %}
     <section class="page-heading">
         <div>
             <p class="eyebrow">Inventaire</p>
-            <h1>Materiels</h1>
+            <h1>Matériels</h1>
         </div>
-        {% if is_granted('ROLE_MANAGER') %}
-            <a class="button primary" href="{{ path('app_materials_new') }}">Nouveau materiel</a>
-        {% endif %}
+        <div class="button-row">
+            {% if is_granted('ROLE_MANAGER') %}
+                <a class="button secondary" href="{{ path('app_materials_export', app.request.query.all) }}">Exporter CSV</a>
+                <a class="button primary" href="{{ path('app_materials_new') }}">Nouveau matériel</a>
+            {% endif %}
+        </div>
     </section>
 
     <section class="content-panel">
@@ -20,7 +23,7 @@
             <div class="filter-field search-field">
                 <label for="q">Rechercher</label>
                 <input type="search" id="q" name="q" value="{{ filters.q|default('') }}"
-                       placeholder="Nom, reference, serie, localisation, categorie..."
+                       placeholder="Nom, reference, serie, localisation, catégorie..."
                        autocomplete="off" data-action="input->search#queueSubmit">
             </div>
 
@@ -35,7 +38,7 @@
             </div>
 
             <div class="filter-field">
-                <label for="category">Categorie</label>
+                <label for="category">Catégorie</label>
                 <select id="category" name="category" data-action="change->search#queueSubmit">
                     <option value="">Toutes</option>
                     {% for category in categories %}
@@ -56,12 +59,12 @@
 
             <div class="filter-actions">
                 <button type="submit" class="button primary">Rechercher</button>
-                <a class="button secondary" href="{{ path('app_materials_index') }}">Reinitialiser</a>
+                <a class="button secondary" href="{{ path('app_materials_index') }}">Réinitialiser</a>
             </div>
         </form>
 
         <p class="result-count" aria-live="polite">
-            {{ total }} materiel{{ total > 1 ? 's' : '' }} trouve{{ total > 1 ? 's' : '' }}
+            {{ total }} matériel{{ total > 1 ? 's' : '' }} trouvé{{ total > 1 ? 's' : '' }}
             {% if filters.q %}pour &laquo; {{ filters.q }} &raquo;{% endif %}
         </p>
 
@@ -71,11 +74,11 @@
                     <thead>
                         <tr>
                             <th>Nom</th>
-                            <th>Reference</th>
-                            <th>Serie</th>
-                            <th>Quantite</th>
+                            <th>Référence</th>
+                            <th>Série</th>
+                            <th>Quantité</th>
                             <th>Statut</th>
-                            <th>Categorie</th>
+                            <th>Catégorie</th>
                             <th>Fournisseur</th>
                             <th>Emplacement</th>
                             <th></th>
@@ -88,9 +91,9 @@
                                 <td>{{ material.reference }}</td>
                                 <td>{{ material.serialNumber ?: '-' }}</td>
                                 <td>
-                                    <span class="{{ material.quantity <= 2 ? 'stock-low' : '' }}"
-                                          {% if material.quantity <= 2 %}title="Stock faible"{% endif %}>
-                                        {{ material.quantity }}{% if material.quantity == 0 %} (rupture){% elseif material.quantity <= 2 %} (faible){% endif %}
+                                    <span class="{{ material.isLowStock ? 'stock-low' : '' }}"
+                                          {% if material.isLowStock %}title="Stock faible (seuil : {{ material.alertThreshold }})"{% endif %}>
+                                        {{ material.quantity }}{% if material.quantity == 0 %} (rupture){% elseif material.isLowStock %} (faible){% endif %}
                                     </span>
                                 </td>
                                 <td><span class="status status--{{ material.status }}">{{ material.statusLabel }}</span></td>
@@ -112,7 +115,7 @@
             {% if pages > 1 %}
                 <nav class="pagination" aria-label="Pagination">
                     {% if page > 1 %}
-                        <a class="button secondary small" href="{{ path('app_materials_index', app.request.query.all|merge({page: page - 1})) }}">&laquo; Precedent</a>
+                        <a class="button secondary small" href="{{ path('app_materials_index', app.request.query.all|merge({page: page - 1})) }}">&laquo; Précédent</a>
                     {% endif %}
                     <span class="pagination-info">Page {{ page }} / {{ pages }}</span>
                     {% if page < pages %}
@@ -122,8 +125,8 @@
             {% endif %}
         {% else %}
             <div class="empty-state">
-                <p class="empty">Aucun materiel trouve avec ces criteres.</p>
-                <a class="button secondary" href="{{ path('app_materials_index') }}">Reinitialiser les filtres</a>
+                <p class="empty">Aucun matériel trouvé avec ces criteres.</p>
+                <a class="button secondary" href="{{ path('app_materials_index') }}">Réinitialiser les filtres</a>
             </div>
         {% endif %}
     </section>

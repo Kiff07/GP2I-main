@@ -93,7 +93,7 @@ class PurchaseOrders
 
         return $this;
     }
-    public static function statusChoices(): array { return ['En attente' => self::STATUS_PENDING, 'Commandee' => self::STATUS_ORDERED, 'Recue' => self::STATUS_RECEIVED, 'Annulee' => self::STATUS_CANCELLED]; }
+    public static function statusChoices(): array { return ['En attente' => self::STATUS_PENDING, 'Commandée' => self::STATUS_ORDERED, 'Reçue' => self::STATUS_RECEIVED, 'Annulee' => self::STATUS_CANCELLED]; }
     public function getStatusLabel(): string { return array_flip(self::statusChoices())[$this->status] ?? (string) $this->status; }
     public function getId(): ?int { return $this->id; }
     public function getSupplier(): ?Suppliers { return $this->supplier; }

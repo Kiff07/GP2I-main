@@ -36,16 +36,16 @@ class UsersType extends AbstractType
                 'mapped' => false,
                 'required' => (bool) $options['password_required'],
                 'attr' => ['autocomplete' => 'new-password', 'minlength' => 8],
-                'help' => '8 caracteres minimum.',
+                'help' => '8 caractères minimum.',
             ])
             ->add('roles', ChoiceType::class, [
-                'label' => 'Roles',
+                'label' => 'Rôles',
                 'choices' => ['Utilisateur (lecture)' => 'ROLE_USER', 'Gestionnaire (stock)' => 'ROLE_MANAGER', 'Administrateur' => 'ROLE_ADMIN'],
                 'multiple' => true,
                 'expanded' => true,
             ])
             ->add('fullName', TextType::class, ['label' => 'Nom complet', 'required' => false])
-            ->add('phone', TextType::class, ['label' => 'Telephone', 'required' => false])
+            ->add('phone', TextType::class, ['label' => 'Téléphone', 'required' => false])
         ;
     }
 

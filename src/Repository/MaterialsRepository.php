@@ -24,10 +24,10 @@ class MaterialsRepository extends ServiceEntityRepository
      * Recherche et filtre les matériels.
      *
      * Corrections par rapport a la version initiale :
-     * - les caracteres speciaux LIKE (% et _) sont echappes, sinon une
+     * - les caractères speciaux LIKE (% et _) sont echappes, sinon une
      *   recherche "%" renvoyait tout le catalogue ;
-     * - la recherche couvre aussi le nom de la categorie et du fournisseur
-     *   (jointures), pas seulement les colonnes du materiel ;
+     * - la recherche couvre aussi le nom de la catégorie et du fournisseur
+     *   (jointures), pas seulement les colonnes du matériel ;
      * - un statut invalide passe dans l'URL est ignore au lieu de
      *   produire une liste vide incomprehensible ;
      * - recherche insensible a la casse via LOWER().
@@ -71,7 +71,7 @@ class MaterialsRepository extends ServiceEntityRepository
     }
 
     /**
-     * Nombre de materiels par statut, pour le tableau de bord.
+     * Nombre de matériels par statut, pour le tableau de bord.
      *
      * @return array<string, int> ex. ['available' => 12, 'borrowed' => 3]
      */
@@ -92,16 +92,17 @@ class MaterialsRepository extends ServiceEntityRepository
     }
 
     /**
-     * Materiels en stock faible (ou en rupture) a afficher en alerte.
+     * Matériels en stock faible (ou en rupture) a afficher en alerte.
      *
      * @return Materials[]
      */
     public function findLowStock(int $threshold = self::LOW_STOCK_THRESHOLD, int $limit = 5): array
     {
+        // Le seuil peut etre global (parametre) ou propre a chaque
+        // materiel : on compare a la colonne alert_threshold de la ligne.
         return $this->createQueryBuilder('m')
-            ->andWhere('m.quantity <= :threshold')
+            ->andWhere('m.quantity <= m.alert_threshold')
             ->andWhere('m.status != :disposed')
-            ->setParameter('threshold', $threshold)
             ->setParameter('disposed', Materials::STATUS_DISPOSED)
             ->orderBy('m.quantity', 'ASC')
             ->setMaxResults($limit)
@@ -123,7 +124,7 @@ class MaterialsRepository extends ServiceEntityRepository
                 ->setParameter('q', $term);
         }
 
-        // Ignorer un statut qui n'existe pas (URL modifiee a la main, etc.)
+        // Ignorer un statut qui n'existe pas (URL modifiée a la main, etc.)
         if (null !== $status && \in_array($status, Materials::statusChoices(), true)) {
             $qb->andWhere('m.status = :status')
                 ->setParameter('status', $status);

@@ -21,7 +21,6 @@ class AssetImages
     private ?Materials $material = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
     private ?string $filename = null;
 

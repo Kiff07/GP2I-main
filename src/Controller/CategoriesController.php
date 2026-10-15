@@ -38,7 +38,7 @@ class CategoriesController extends AbstractController
             $entityManager->persist($category);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Categorie creee avec succes.');
+            $this->addFlash('success', 'Catégorie créée avec succes.');
 
             return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -67,7 +67,7 @@ class CategoriesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            $this->addFlash('success', 'Categorie modifiee avec succes.');
+            $this->addFlash('success', 'Catégorie modifiée avec succes.');
 
             return $this->redirectToRoute('app_categories_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -84,11 +84,11 @@ class CategoriesController extends AbstractController
     {
         if ($this->isCsrfTokenValid('delete'.$category->getId(), (string) $request->request->get('_token'))) {
             if ($category->getMaterials()->count() > 0) {
-                $this->addFlash('warning', 'Cette categorie contient encore du materiel.');
+                $this->addFlash('warning', 'Cette catégorie contient encore du matériel.');
             } else {
                 $entityManager->remove($category);
                 $entityManager->flush();
-                $this->addFlash('success', 'Categorie supprimee.');
+                $this->addFlash('success', 'Catégorie supprimée.');
             }
         }
 

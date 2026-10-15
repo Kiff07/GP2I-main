@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modifier un materiel - GP2I{% endblock %}
+{% block title %}Modifier un matériel - GP2I{% endblock %}
 
 {% block body %}
     <section class="page-heading">
         <div>
             <p class="eyebrow">Inventaire</p>
-            <h1>Modifier le materiel</h1>
+            <h1>Modifier le matériel</h1>
         </div>
         {{ include('materials/_delete_form.html.twig') }}
     </section>
 
-    {{ include('materials/_form.html.twig', {'button_label': 'Mettre a jour'}) }}
+    {{ include('materials/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 {% endblock %}

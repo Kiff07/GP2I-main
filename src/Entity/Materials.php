@@ -71,6 +71,11 @@ class Materials
     #[Assert\Length(max: 255)]
     private ?string $location = null;
 
+    // Seuil en dessous duquel le materiel apparait en "stock faible".
+    #[ORM\Column(options: ['default' => 2])]
+    #[Assert\PositiveOrZero]
+    private ?int $alert_threshold = 2;
+
     #[ORM\Column(nullable: true)]
     private ?\DateTime $purchase_date = null;
 
@@ -96,25 +101,32 @@ class Materials
     #[ORM\OneToMany(targetEntity: AssetImages::class, mappedBy: 'material', orphanRemoval: true)]
     private Collection $assetImages;
 
+    /**
+     * @var Collection<int, Loans>
+     */
+    #[ORM\OneToMany(targetEntity: Loans::class, mappedBy: 'material', orphanRemoval: true)]
+    private Collection $loans;
+
     public function __construct()
     {
         $this->created_at = new \DateTimeImmutable();
         $this->inventoryMovements = new ArrayCollection();
         $this->assetImages = new ArrayCollection();
+        $this->loans = new ArrayCollection();
     }
 
     public function __toString(): string
     {
-        return $this->name ?? 'Materiel';
+        return $this->name ?? 'Matériel';
     }
 
     public static function statusChoices(): array
     {
         return [
             'Disponible' => self::STATUS_AVAILABLE,
-            'Emprunte' => self::STATUS_BORROWED,
+            'Emprunté' => self::STATUS_BORROWED,
             'Maintenance' => self::STATUS_MAINTENANCE,
-            'Casse' => self::STATUS_BROKEN,
+            'Cassé' => self::STATUS_BROKEN,
             'Sorti du parc' => self::STATUS_DISPOSED,
         ];
     }
@@ -287,5 +299,32 @@ class Materials
     public function getAssetImages(): Collection
     {
         return $this->assetImages;
+    }
+
+    /**
+     * @return Collection<int, Loans>
+     */
+    public function getLoans(): Collection
+    {
+        return $this->loans;
+    }
+
+    public function getAlertThreshold(): ?int
+    {
+        return $this->alert_threshold;
+    }
+
+    public function setAlertThreshold(int $alert_threshold): static
+    {
+        $this->alert_threshold = $alert_threshold;
+
+        return $this;
+    }
+
+    // Le stock est-il faible pour CE materiel (selon son propre seuil) ?
+    public function isLowStock(): bool
+    {
+        return (int) $this->quantity <= (int) $this->alert_threshold
+            && self::STATUS_DISPOSED !== $this->status;
     }
 }

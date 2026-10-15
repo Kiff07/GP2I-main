@@ -5,12 +5,12 @@
 {% block body %}
     <section class="login-wrap">
         <div class="login-card">
-            <p class="eyebrow">Gestion du materiel</p>
+            <p class="eyebrow">Gestion du matériel</p>
             <h1>Connexion</h1>
 
             {% if error %}
                 <div class="alert alert-error" role="alert">
-                    Identifiants invalides, veuillez reessayer.
+                    Identifiants invalides, veuillez réessayer.
                 </div>
             {% endif %}
 
@@ -29,7 +29,7 @@
 
                 <label class="login-remember">
                     <input type="checkbox" name="_remember_me" value="1">
-                    Rester connecte
+                    Rester connecté
                 </label>
 
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
@@ -38,8 +38,8 @@
             </form>
 
             <p class="login-help">
-                Compte de demonstration (a changer) : <code>admin@gp2i.local</code> / <code>admin123</code><br>
-                Creez un compte avec : <code>php bin/console app:create-admin</code>
+                Compte de démonstration (a changer) : <code>admin@gp2i.local</code> / <code>admin123</code><br>
+                Créez un compte avec : <code>php bin/console app:create-admin</code>
             </p>
         </div>
     </section>

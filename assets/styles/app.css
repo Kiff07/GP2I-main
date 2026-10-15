@@ -536,3 +536,73 @@ tbody tr:hover { background: #f8fafc; }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition: none !important; }
 }
+
+/* ============================================================
+   Lot 2 : graphiques, galerie photos, etiquette QR, mode sombre
+   ============================================================ */
+
+/* --- Graphiques du tableau de bord (sans librairie) --- */
+.chart-bars { display: flex; flex-direction: column; gap: 10px; }
+.chart-row { display: flex; align-items: center; gap: 12px; }
+.chart-label { min-width: 130px; }
+.chart-track { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 999px; height: 18px; overflow: hidden; }
+.chart-fill { display: block; height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+.fill-available, .fill-received, .fill-returned { background: #22c55e; }
+.fill-borrowed, .fill-pending, .fill-active { background: #f59e0b; }
+.fill-maintenance, .fill-ordered { background: #3b82f6; }
+.fill-broken, .fill-cancelled, .fill-overdue { background: #ef4444; }
+.fill-disposed { background: #9ca3af; }
+.chart-count { min-width: 30px; text-align: right; }
+.chart-cols { display: flex; align-items: flex-end; gap: 14px; height: 170px; padding-top: 10px; }
+.chart-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 6px; height: 100%; }
+.chart-col-bar { width: 100%; max-width: 52px; background: var(--primary); border-radius: 6px 6px 0 0; min-height: 4px; }
+.chart-col small { color: var(--muted); font-size: 12px; }
+
+/* --- Galerie photos --- */
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+.gallery-item { margin: 0; }
+.gallery-item img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
+.gallery-item figcaption { color: var(--muted); font-size: 13px; margin-top: 5px; }
+
+/* --- Bouton "lien" dans les tableaux (retour d'emprunt) --- */
+.inline-form { display: inline; }
+.link-button { background: none; border: 0; color: var(--primary); cursor: pointer; font: inherit; padding: 0; margin-left: 10px; }
+.link-button:hover { text-decoration: underline; }
+
+/* --- Etiquette QR --- */
+.label-card {
+    background: var(--surface); border: 2px dashed var(--border); border-radius: 12px;
+    display: flex; gap: 22px; align-items: center; padding: 24px; max-width: 560px; margin-bottom: 18px;
+}
+.label-info { display: flex; flex-direction: column; gap: 4px; }
+.label-name { font-size: 22px; }
+.label-ref { font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+.label-brand { color: var(--muted); font-size: 12px; margin-top: 8px; text-transform: uppercase; }
+
+@media print {
+    .site-header, .site-footer, .no-print, .alert { display: none !important; }
+    body { background: #fff; }
+    .label-card { border-style: solid; }
+}
+
+/* --- Mode sombre (suit le reglage du systeme) --- */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0f172a; --surface: #1e293b; --text: #e2e8f0;
+        --muted: #94a3b8; --border: #334155;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    color-scheme: dark;
+    tbody tr:hover { background: #273549; }
+    .nav-links a:hover { background: #334155; }
+    .nav-links a.active { background: #334155; color: #c7d2fe; }
+    .global-search input { background: #0f172a; color: var(--text); }
+    .global-search input:focus { background: #1e293b; }
+    .button.secondary { background: #1e293b; color: var(--text); }
+    .form-card input, .form-card select, .form-card textarea,
+    .filter-field input, .filter-field select, .login-field input {
+        background: #0f172a; color: var(--text);
+    }
+    .chart-track { background: #0f172a; }
+    .label-card { background: var(--surface); }
+}

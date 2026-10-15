@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -63,7 +64,7 @@ class MaterialsController extends AbstractController
             $entityManager->persist($material);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Materiel cree avec succes.');
+            $this->addFlash('success', 'Matériel créé avec succes.');
 
             return $this->redirectToRoute('app_materials_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -74,7 +75,38 @@ class MaterialsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_materials_show', methods: ['GET'])]
+    #[Route('/export', name: 'app_materials_export', methods: ['GET'])]
+    #[IsGranted('ROLE_MANAGER')]
+    public function export(Request $request, MaterialsRepository $materialsRepository): StreamedResponse
+    {
+        $materials = $materialsRepository->search(
+            $request->query->get('q'),
+            $request->query->get('status'),
+            $request->query->getInt('category') ?: null,
+            $request->query->getInt('supplier') ?: null,
+        );
+
+        $response = new StreamedResponse(function () use ($materials) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['Nom', 'Référence', 'Série', 'Quantité', 'Statut', 'Catégorie', 'Fournisseur', 'Emplacement'], ';');
+            foreach ($materials as $m) {
+                fputcsv($handle, [$m->getName(), $m->getReference(), $m->getSerialNumber(), $m->getQuantity(), $m->getStatusLabel(), $m->getCategory()?->getName(), $m->getSupplier()?->getName(), $m->getLocation()], ';');
+            }
+            fclose($handle);
+        });
+        $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
+        $response->headers->set('Content-Disposition', 'attachment; filename="materiels.csv"');
+
+        return $response;
+    }
+
+    #[Route('/{id}/label', name: 'app_materials_label', methods: ['GET'], requirements: ['id' => '\\d+'])]
+    public function label(Materials $material): Response
+    {
+        return $this->render('materials/label.html.twig', ['material' => $material]);
+    }
+
+    #[Route('/{id}', name: 'app_materials_show', methods: ['GET'], requirements: ['id' => '\\d+'])]
     public function show(Materials $material): Response
     {
         return $this->render('materials/show.html.twig', [
@@ -82,7 +114,7 @@ class MaterialsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_materials_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_materials_edit', methods: ['GET', 'POST'], requirements: ['id' => '\\d+'])]
     #[IsGranted('ROLE_MANAGER')]
     public function edit(Request $request, Materials $material, EntityManagerInterface $entityManager): Response
     {
@@ -93,7 +125,7 @@ class MaterialsController extends AbstractController
             $material->setUpdatedAt(new \DateTime());
             $entityManager->flush();
 
-            $this->addFlash('success', 'Materiel modifie avec succes.');
+            $this->addFlash('success', 'Matériel modifié avec succes.');
 
             return $this->redirectToRoute('app_materials_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -104,14 +136,14 @@ class MaterialsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_materials_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_materials_delete', methods: ['POST'], requirements: ['id' => '\\d+'])]
     #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, Materials $material, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$material->getId(), (string) $request->request->get('_token'))) {
             $entityManager->remove($material);
             $entityManager->flush();
-            $this->addFlash('success', 'Materiel supprime.');
+            $this->addFlash('success', 'Matériel supprimé.');
         }
 
         return $this->redirectToRoute('app_materials_index', [], Response::HTTP_SEE_OTHER);

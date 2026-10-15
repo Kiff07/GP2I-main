@@ -6,10 +6,10 @@ use App\Entity\InventoryMovements;
 use App\Entity\Materials;
 
 /**
- * Applique un mouvement de stock au materiel concerne.
+ * Applique un mouvement de stock au matériel concerne.
  *
  * AVANT : creer un mouvement n'avait AUCUN effet. La quantite, le lieu
- * et le statut du materiel ne bougeaient jamais, donc l'inventaire
+ * et le statut du matériel ne bougeaient jamais, donc l'inventaire
  * divergeait de l'historique des mouvements des le premier jour.
  *
  * Regles :
@@ -28,7 +28,7 @@ class StockManager
     {
         $material = $movement->getMaterial();
         if (null === $material) {
-            throw new \InvalidArgumentException('Le mouvement doit concerner un materiel.');
+            throw new \InvalidArgumentException('Le mouvement doit concerner un matériel.');
         }
 
         $quantity = (int) $movement->getQuantity();

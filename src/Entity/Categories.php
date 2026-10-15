@@ -43,7 +43,7 @@ class Categories
 
     public function __toString(): string
     {
-        return $this->name ?? 'Categorie';
+        return $this->name ?? 'Catégorie';
     }
 
     public function getId(): ?int

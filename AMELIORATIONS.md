@@ -312,3 +312,37 @@ php bin/phpunit
   Lancez les commandes de la section 5.6 chez vous pour la validation finale.
 - Pour annuler toutes ces modifications : `git checkout -- .` sur la branche concernee
   (les nouveaux fichiers non suivis devront etre supprimes a la main).
+
+---
+
+## 7. Lot 2 — tout le reste des suggestions (appliqué)
+
+- **Présentation** : accents français dans toute l'interface, `README.md` complet,
+  bouton **Exporter CSV** sur la liste des matériels.
+- **Emprunts** (nouveau menu) : matériel, emprunteur, dates, statut calculé
+  (En cours / En retard / Retourné), sortie et réintégration du stock automatiques,
+  retards affichés sur le tableau de bord. Table créée par la migration
+  `Version20261015120000` (qui ajoute aussi le seuil d'alerte par matériel).
+- **Réception automatique** : créer une livraison liée à une commande réceptionne
+  les lignes, augmente le stock des matériels reconnus par leur référence,
+  crée les mouvements d'entrée et passe la commande en "Reçue"
+  (`src/Service/ReceptionManager.php`).
+- **Photos réelles** : envoi de fichier image (JPG/PNG/WebP, 2 Mo) dans l'écran
+  Images, fichiers dans `public/uploads/`, galerie sur la fiche matériel.
+- **Graphiques** du tableau de bord en pur CSS (répartition par statut,
+  mouvements des 6 derniers mois), **mode sombre** automatique.
+- **Filtres + pagination** sur Commandes et Mouvements, **page Mon profil**
+  avec changement de mot de passe, **étiquette QR code** imprimable par matériel
+  (bouton sur la fiche), **seuil d'alerte stock** réglable par matériel,
+  **archivage automatique** des suppressions (`ArchiveListener`),
+  tests unitaires (stock, emprunts) et **CI GitHub Actions**.
+
+Après récupération de ce lot :
+
+```bash
+git pull origin arena/6e9ac7cb-gp2i-main
+php bin/console doctrine:migrations:migrate --no-interaction
+php bin/console cache:clear
+php bin/console asset-map:compile
+php bin/phpunit tests/Service tests/Entity
+```

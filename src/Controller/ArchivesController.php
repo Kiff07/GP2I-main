@@ -21,7 +21,7 @@ class ArchivesController extends AbstractController
         return $this->render('crud/index.html.twig', [
             'title' => 'Archives',
             'new_path' => 'app_archives_new',
-            'headers' => ['Entite', 'ID', 'Action', 'Cree par', 'Date'],
+            'headers' => ['Entité', 'ID', 'Action', 'Créé par', 'Date'],
             'rows' => array_map(fn (Archives $archive) => [
                 'entity' => $archive,
                 'show_path' => 'app_archives_show',
@@ -42,7 +42,7 @@ class ArchivesController extends AbstractController
             $archive->setData($this->decodeJsonData((string) $form->get('data')->getData()));
             $em->persist($archive);
             $em->flush();
-            $this->addFlash('success', 'Archive creee.');
+            $this->addFlash('success', 'Archive créée.');
             return $this->redirectToRoute('app_archives_index');
         }
         return $this->render('crud/form.html.twig', ['title' => 'Nouvelle archive', 'form' => $form, 'back_path' => 'app_archives_index']);
@@ -51,7 +51,7 @@ class ArchivesController extends AbstractController
     #[Route('/{id}', name: 'app_archives_show', methods: ['GET'])]
     public function show(Archives $archive): Response
     {
-        return $this->render('crud/show.html.twig', ['title' => (string) $archive, 'edit_path' => 'app_archives_edit', 'back_path' => 'app_archives_index', 'delete_path' => 'app_archives_delete', 'entity' => $archive, 'fields' => ['Entite' => $archive->getEntity(), 'ID entite' => $archive->getEntityId(), 'Action' => $archive->getAction(), 'Cree par' => $archive->getCreatedBy()?->getFullName() ?: '-', 'Date' => $archive->getCreatedAt()?->format('d/m/Y H:i'), 'Donnees' => json_encode($archive->getData(), JSON_PRETTY_PRINT) ?: '-']]);
+        return $this->render('crud/show.html.twig', ['title' => (string) $archive, 'edit_path' => 'app_archives_edit', 'back_path' => 'app_archives_index', 'delete_path' => 'app_archives_delete', 'entity' => $archive, 'fields' => ['Entité' => $archive->getEntity(), 'ID entite' => $archive->getEntityId(), 'Action' => $archive->getAction(), 'Créé par' => $archive->getCreatedBy()?->getFullName() ?: '-', 'Date' => $archive->getCreatedAt()?->format('d/m/Y H:i'), 'Données' => json_encode($archive->getData(), JSON_PRETTY_PRINT) ?: '-']]);
     }
 
     #[Route('/{id}/edit', name: 'app_archives_edit', methods: ['GET', 'POST'])]
@@ -64,7 +64,7 @@ class ArchivesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $archive->setData($this->decodeJsonData((string) $form->get('data')->getData()));
             $em->flush();
-            $this->addFlash('success', 'Archive modifiee.');
+            $this->addFlash('success', 'Archive modifiée.');
             return $this->redirectToRoute('app_archives_index');
         }
         return $this->render('crud/form.html.twig', ['title' => 'Modifier archive', 'form' => $form, 'back_path' => 'app_archives_index']);
@@ -88,7 +88,7 @@ class ArchivesController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$archive->getId(), (string) $request->request->get('_token'))) {
             $em->remove($archive);
             $em->flush();
-            $this->addFlash('success', 'Archive supprimee.');
+            $this->addFlash('success', 'Archive supprimée.');
         }
 
         return $this->redirectToRoute('app_archives_index', [], Response::HTTP_SEE_OTHER);

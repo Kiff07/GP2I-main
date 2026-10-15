@@ -17,21 +17,21 @@
     <section class="detail-grid">
         <div class="detail-item"><span>Contact</span><strong>{{ supplier.contactName ?: '-' }}</strong></div>
         <div class="detail-item"><span>Email</span><strong>{{ supplier.email ?: '-' }}</strong></div>
-        <div class="detail-item"><span>Telephone</span><strong>{{ supplier.phone ?: '-' }}</strong></div>
-        <div class="detail-item"><span>Cree le</span><strong>{{ supplier.createdAt ? supplier.createdAt|date('d/m/Y H:i') : '-' }}</strong></div>
+        <div class="detail-item"><span>Téléphone</span><strong>{{ supplier.phone ?: '-' }}</strong></div>
+        <div class="detail-item"><span>Créé le</span><strong>{{ supplier.createdAt ? supplier.createdAt|date('d/m/Y H:i') : '-' }}</strong></div>
         <div class="detail-item wide"><span>Adresse</span><strong>{{ supplier.address ?: '-' }}</strong></div>
     </section>
 
     <section class="content-panel">
         <div class="section-title">
-            <h2>Commandes associees</h2>
+            <h2>Commandes associées</h2>
         </div>
         {% if supplier.purchaseOrders is not empty %}
             <div class="table-wrap">
                 <table>
                     <thead>
                         <tr>
-                            <th>Numero</th>
+                            <th>Numéro</th>
                             <th>Statut</th>
                             <th>Date</th>
                             <th></th>
@@ -50,7 +50,7 @@
                 </table>
             </div>
         {% else %}
-            <p class="empty">Aucune commande associee.</p>
+            <p class="empty">Aucune commande associée.</p>
         {% endif %}
     </section>
 {% endblock %}

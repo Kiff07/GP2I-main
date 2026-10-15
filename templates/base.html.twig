@@ -3,8 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="GP2I - Gestion du parc et du materiel informatique">
-        <title>{% block title %}GP2I - Gestion du materiel{% endblock %}</title>
+        <meta name="description" content="GP2I - Gestion du parc et du matériel informatique">
+        <title>{% block title %}GP2I - Gestion du matériel{% endblock %}</title>
         {% block stylesheets %}
         {% endblock %}
 
@@ -30,25 +30,26 @@
                 {% if app.user %}
                     <div class="nav-links">
                         <a href="{{ path('app_dashboard') }}" class="{{ route starts with 'app_dashboard' ? 'active' : '' }}" {{ route starts with 'app_dashboard' ? 'aria-current="page"' : '' }}>Tableau de bord</a>
-                        <a href="{{ path('app_materials_index') }}" class="{{ route starts with 'app_materials' ? 'active' : '' }}" {{ route starts with 'app_materials' ? 'aria-current="page"' : '' }}>Materiels</a>
-                        <a href="{{ path('app_categories_index') }}" class="{{ route starts with 'app_categories' ? 'active' : '' }}" {{ route starts with 'app_categories' ? 'aria-current="page"' : '' }}>Categories</a>
+                        <a href="{{ path('app_materials_index') }}" class="{{ route starts with 'app_materials' ? 'active' : '' }}" {{ route starts with 'app_materials' ? 'aria-current="page"' : '' }}>Matériels</a>
+                        <a href="{{ path('app_categories_index') }}" class="{{ route starts with 'app_categories' ? 'active' : '' }}" {{ route starts with 'app_categories' ? 'aria-current="page"' : '' }}>Catégories</a>
                         <a href="{{ path('app_suppliers_index') }}" class="{{ route starts with 'app_suppliers' ? 'active' : '' }}" {{ route starts with 'app_suppliers' ? 'aria-current="page"' : '' }}>Fournisseurs</a>
                         <a href="{{ path('app_purchase_orders_index') }}" class="{{ route starts with 'app_purchase_orders' ? 'active' : '' }}" {{ route starts with 'app_purchase_orders' ? 'aria-current="page"' : '' }}>Commandes</a>
                         <a href="{{ path('app_inventory_movements_index') }}" class="{{ route starts with 'app_inventory_movements' ? 'active' : '' }}" {{ route starts with 'app_inventory_movements' ? 'aria-current="page"' : '' }}>Mouvements</a>
+                        <a href="{{ path('app_loans_index') }}" class="{{ route starts with 'app_loans' ? 'active' : '' }}" {{ route starts with 'app_loans' ? 'aria-current="page"' : '' }}>Emprunts</a>
                         {% if is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('app_users_index') }}" class="{{ route starts with 'app_users' ? 'active' : '' }}" {{ route starts with 'app_users' ? 'aria-current="page"' : '' }}>Utilisateurs</a>
                         {% endif %}
                     </div>
 
-                    {# Recherche globale : redirige vers la liste des materiels filtree #}
+                    {# Recherche globale : redirige vers la liste des matériels filtree #}
                     <form class="global-search" method="get" action="{{ path('app_materials_index') }}" role="search">
-                        <label class="sr-only" for="global-q">Rechercher un materiel</label>
-                        <input type="search" id="global-q" name="q" placeholder="Rechercher un materiel..." autocomplete="off">
+                        <label class="sr-only" for="global-q">Rechercher un matériel</label>
+                        <input type="search" id="global-q" name="q" placeholder="Rechercher un matériel..." autocomplete="off">
                     </form>
 
                     <div class="user-menu">
-                        <span class="user-chip" title="{{ app.user.userIdentifier }}">{{ app.user.fullName ?? app.user.userIdentifier }}</span>
-                        <a class="button secondary small" href="{{ path('app_logout') }}">Deconnexion</a>
+                        <a class="user-chip" href="{{ path('app_profile') }}" title="Mon profil">{{ app.user.fullName ?? app.user.userIdentifier }}</a>
+                        <a class="button secondary small" href="{{ path('app_logout') }}">Déconnexion</a>
                     </div>
                 {% endif %}
             </nav>
@@ -65,7 +66,7 @@
         </main>
 
         <footer class="site-footer">
-            <span>GP2I - Gestion du parc materiel</span>
+            <span>GP2I - Gestion du parc matériel</span>
             <span>{{ 'now'|date('Y') }}</span>
         </footer>
     </body>

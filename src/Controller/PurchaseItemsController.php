@@ -21,7 +21,7 @@ class PurchaseItemsController extends AbstractController
         return $this->render('crud/index.html.twig', [
             'title' => 'Lignes de commande',
             'new_path' => 'app_purchase_items_new',
-            'headers' => ['Commande', 'Materiel', 'Reference', 'Quantite', 'Recue'],
+            'headers' => ['Commande', 'Matériel', 'Référence', 'Quantité', 'Reçue'],
             'rows' => array_map(fn (PurchaseItems $item) => [
                 'entity' => $item,
                 'show_path' => 'app_purchase_items_show',
@@ -38,14 +38,14 @@ class PurchaseItemsController extends AbstractController
         $item = new PurchaseItems();
         $form = $this->createForm(PurchaseItemsType::class, $item);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) { $em->persist($item); $item->getPurchaseOrder()?->recalculateTotal(); $em->flush(); $this->addFlash('success', 'Ligne creee.'); return $this->redirectToRoute('app_purchase_items_index'); }
+        if ($form->isSubmitted() && $form->isValid()) { $em->persist($item); $item->getPurchaseOrder()?->recalculateTotal(); $em->flush(); $this->addFlash('success', 'Ligne créée.'); return $this->redirectToRoute('app_purchase_items_index'); }
         return $this->render('crud/form.html.twig', ['title' => 'Nouvelle ligne', 'form' => $form, 'back_path' => 'app_purchase_items_index']);
     }
 
     #[Route('/{id}', name: 'app_purchase_items_show', methods: ['GET'])]
     public function show(PurchaseItems $item): Response
     {
-        return $this->render('crud/show.html.twig', ['title' => (string) $item, 'edit_path' => 'app_purchase_items_edit', 'back_path' => 'app_purchase_items_index', 'delete_path' => 'app_purchase_items_delete', 'entity' => $item, 'fields' => ['Commande' => $item->getPurchaseOrder()?->getOrderNumber(), 'Materiel' => $item->getMaterialName(), 'Reference' => $item->getMaterialReference() ?: '-', 'Quantite' => $item->getQuantity(), 'Prix unitaire' => $item->getUnitPrice() ?: '-', 'Quantite recue' => $item->getReceivedQuantity()]]);
+        return $this->render('crud/show.html.twig', ['title' => (string) $item, 'edit_path' => 'app_purchase_items_edit', 'back_path' => 'app_purchase_items_index', 'delete_path' => 'app_purchase_items_delete', 'entity' => $item, 'fields' => ['Commande' => $item->getPurchaseOrder()?->getOrderNumber(), 'Matériel' => $item->getMaterialName(), 'Référence' => $item->getMaterialReference() ?: '-', 'Quantité' => $item->getQuantity(), 'Prix unitaire' => $item->getUnitPrice() ?: '-', 'Quantité reçue' => $item->getReceivedQuantity()]]);
     }
 
     #[Route('/{id}/edit', name: 'app_purchase_items_edit', methods: ['GET', 'POST'])]
@@ -54,7 +54,7 @@ class PurchaseItemsController extends AbstractController
     {
         $form = $this->createForm(PurchaseItemsType::class, $item);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) { $item->getPurchaseOrder()?->recalculateTotal(); $em->flush(); $this->addFlash('success', 'Ligne modifiee.'); return $this->redirectToRoute('app_purchase_items_index'); }
+        if ($form->isSubmitted() && $form->isValid()) { $item->getPurchaseOrder()?->recalculateTotal(); $em->flush(); $this->addFlash('success', 'Ligne modifiée.'); return $this->redirectToRoute('app_purchase_items_index'); }
         return $this->render('crud/form.html.twig', ['title' => 'Modifier ligne', 'form' => $form, 'back_path' => 'app_purchase_items_index']);
     }
 
@@ -68,7 +68,7 @@ class PurchaseItemsController extends AbstractController
             $em->flush();
             $order?->recalculateTotal();
             $em->flush();
-            $this->addFlash('success', 'Ligne supprimee.');
+            $this->addFlash('success', 'Ligne supprimée.');
         }
 
         return $this->redirectToRoute('app_purchase_items_index', [], Response::HTTP_SEE_OTHER);
