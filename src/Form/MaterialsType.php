@@ -46,12 +46,12 @@ class MaterialsType extends AbstractType
                 'required' => false,
             ])
             ->add('purchaseDate', DateType::class, [
-                'label' => 'Date d'achat',
+                'label' => "Date d'achat",
                 'required' => false,
                 'widget' => 'single_text',
             ])
             ->add('purchasePrice', MoneyType::class, [
-                'label' => 'Prix d'achat',
+                'label' => "Prix d'achat",
                 'required' => false,
                 'currency' => 'EUR',
             ])
