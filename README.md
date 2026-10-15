@@ -74,6 +74,6 @@ ces vérifications à chaque envoi sur GitHub.
 - `src/Controller/` — écrans (tableau de bord, matériels, emprunts, commandes…)
 - `src/Entity/` — modèle de données Doctrine (Materials, Loans, PurchaseOrders…)
 - `src/Service/` — règles métier (`StockManager`, `ReceptionManager`)
-- `src/EventListener/ArchiveListener.php` — journal des suppressions
+- `src/Service/ArchiveService.php` — journal des suppressions
 - `templates/` — vues Twig ; `assets/styles/app.css` — design (clair + sombre)
 - `AMELIORATIONS.md` — historique des analyses et idées d'évolution

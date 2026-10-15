@@ -7,6 +7,7 @@ use App\Form\MaterialsType;
 use App\Repository\CategoriesRepository;
 use App\Repository\MaterialsRepository;
 use App\Repository\SuppliersRepository;
+use App\Service\ArchiveService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -138,9 +139,10 @@ class MaterialsController extends AbstractController
 
     #[Route('/{id}', name: 'app_materials_delete', methods: ['POST'], requirements: ['id' => '\\d+'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function delete(Request $request, Materials $material, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Materials $material, EntityManagerInterface $entityManager, ArchiveService $archiveService): Response
     {
         if ($this->isCsrfTokenValid('delete'.$material->getId(), (string) $request->request->get('_token'))) {
+            $archiveService->logDeletion($material, $entityManager);
             $entityManager->remove($material);
             $entityManager->flush();
             $this->addFlash('success', 'Matériel supprimé.');

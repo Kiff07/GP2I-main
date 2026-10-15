@@ -334,7 +334,7 @@ php bin/phpunit
 - **Filtres + pagination** sur Commandes et Mouvements, **page Mon profil**
   avec changement de mot de passe, **étiquette QR code** imprimable par matériel
   (bouton sur la fiche), **seuil d'alerte stock** réglable par matériel,
-  **archivage automatique** des suppressions (`ArchiveListener`),
+  **archivage automatique** des suppressions (`ArchiveService`),
   tests unitaires (stock, emprunts) et **CI GitHub Actions**.
 
 Après récupération de ce lot :

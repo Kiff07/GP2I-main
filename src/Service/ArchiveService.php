@@ -1,38 +1,32 @@
 <?php
 
-namespace App\EventListener;
+namespace App\Service;
 
 use App\Entity\Archives;
 use App\Entity\Categories;
 use App\Entity\Materials;
 use App\Entity\Suppliers;
 use App\Entity\Users;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
-use Doctrine\ORM\Event\RemoveEventArgs;
-use Doctrine\ORM\Events;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 
 /**
- * Alimente automatiquement la table "archives" à chaque suppression
- * d'un matériel, d'une catégorie ou d'un fournisseur : on garde une
- * trace de quoi a été supprimé, quand, et par qui.
+ * Journal des suppressions : alimente la table "archives" avec
+ * quoi a ete supprime, quand, et par qui.
+ *
+ * Appele explicitement par les controleurs avant la suppression
+ * (un evenement Doctrine onRemove n'existe plus sous cette forme
+ * avec Doctrine ORM 3).
  */
-#[AsDoctrineListener(event: Events::onRemove)]
-class ArchiveListener
+class ArchiveService
 {
     public function __construct(
         private readonly Security $security,
     ) {
     }
 
-    public function onRemove(RemoveEventArgs $args): void
+    public function logDeletion(Materials|Categories|Suppliers $entity, EntityManagerInterface $em): void
     {
-        $entity = $args->getObject();
-
-        if (!$entity instanceof Materials && !$entity instanceof Categories && !$entity instanceof Suppliers) {
-            return;
-        }
-
         $user = $this->security->getUser();
 
         $archive = (new Archives())
@@ -42,11 +36,7 @@ class ArchiveListener
             ->setData($this->snapshot($entity))
             ->setCreatedBy($user instanceof Users ? $user : null);
 
-        $em = $args->getObjectManager();
         $em->persist($archive);
-        // Nécessaire pour qu'une entité créée pendant un événement
-        // de suppression soit bien prise en compte par le flush en cours.
-        $em->getUnitOfWork()->computeChangeSet($em->getClassMetadata(Archives::class), $archive);
     }
 
     private function snapshot(Materials|Categories|Suppliers $entity): array

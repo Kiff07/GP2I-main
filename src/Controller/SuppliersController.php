@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Suppliers;
 use App\Form\SuppliersType;
 use App\Repository\SuppliersRepository;
+use App\Service\ArchiveService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,12 +81,13 @@ class SuppliersController extends AbstractController
 
     #[Route('/{id}', name: 'app_suppliers_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function delete(Request $request, Suppliers $supplier, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Suppliers $supplier, EntityManagerInterface $entityManager, ArchiveService $archiveService): Response
     {
         if ($this->isCsrfTokenValid('delete'.$supplier->getId(), (string) $request->request->get('_token'))) {
             if ($supplier->getMaterials()->count() > 0) {
                 $this->addFlash('warning', 'Ce fournisseur est encore associé a du matériel.');
             } else {
+                $archiveService->logDeletion($supplier, $entityManager);
                 $entityManager->remove($supplier);
                 $entityManager->flush();
                 $this->addFlash('success', 'Fournisseur supprimé.');

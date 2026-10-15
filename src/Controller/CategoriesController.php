@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Categories;
 use App\Form\CategoriesType;
 use App\Repository\CategoriesRepository;
+use App\Service\ArchiveService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -80,12 +81,13 @@ class CategoriesController extends AbstractController
 
     #[Route('/{id}', name: 'app_categories_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Categories $category, EntityManagerInterface $entityManager, ArchiveService $archiveService): Response
     {
         if ($this->isCsrfTokenValid('delete'.$category->getId(), (string) $request->request->get('_token'))) {
             if ($category->getMaterials()->count() > 0) {
                 $this->addFlash('warning', 'Cette catégorie contient encore du matériel.');
             } else {
+                $archiveService->logDeletion($category, $entityManager);
                 $entityManager->remove($category);
                 $entityManager->flush();
                 $this->addFlash('success', 'Catégorie supprimée.');
