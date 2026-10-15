@@ -89,6 +89,7 @@ class MaterialsController extends AbstractController
 
         $response = new StreamedResponse(function () use ($materials) {
             $handle = fopen('php://output', 'w');
+            fwrite($handle, "\xEF\xBB\xBF"); // BOM UTF-8 : force Excel a lire les accents correctement
             fputcsv($handle, ['Nom', 'Référence', 'Série', 'Quantité', 'Statut', 'Catégorie', 'Fournisseur', 'Emplacement'], ';');
             foreach ($materials as $m) {
                 fputcsv($handle, [$m->getName(), $m->getReference(), $m->getSerialNumber(), $m->getQuantity(), $m->getStatusLabel(), $m->getCategory()?->getName(), $m->getSupplier()?->getName(), $m->getLocation()], ';');
